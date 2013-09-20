@@ -1,0 +1,509 @@
+﻿<#@ template language="C#" hostspecific="True" debug="True" #>
+<#@ assembly name="System.Core"#>
+<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.1.0.0\tools\UpdateControls.Correspondence.Factual.dll"#>
+<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.1.0.0\tools\QEDCode.LLOne.dll"#>
+<#@ import namespace="System.IO"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Linq"#>
+<#@ import namespace="UpdateControls.Correspondence.Factual"#>
+<#@ import namespace="UpdateControls.Correspondence.Factual.Compiler"#>
+<#@ import namespace="UpdateControls.Correspondence.Factual.Metadata"#>
+<#@ output extension=".generated.cs"#>
+<#
+var fileName = Host.TemplateFile.Replace(".tt",".fact");
+var parser = new FactualParser(new StreamReader(fileName));
+var ast = parser.Parse();
+
+if (ast == null)
+{
+    foreach (var error in parser.Errors)
+    {#>
+#line <#=error.LineNumber#> "<#=fileName#>"
+#error <#=error.Message#>
+    <#}
+}
+else {
+
+var analyzer = new Analyzer(ast);
+var targetNamespace = analyzer.Analyze();
+
+if (targetNamespace == null)
+{
+    foreach (var error in analyzer.Errors)
+    {#>
+#line <#=error.LineNumber#> "<#=fileName#>"
+#error <#=error.Message#>
+    <#}
+}
+else {
+
+#>
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using UpdateControls.Correspondence;
+using UpdateControls.Correspondence.Mementos;
+using UpdateControls.Correspondence.Strategy;
+using System;
+using System.IO;
+
+/**
+/ For use with http://graphviz.org/
+digraph "<#=targetNamespace.Name#>"
+{
+    rankdir=BT
+<# foreach (Class c in targetNamespace.Classes) {
+    foreach (Predecessor p in c.Predecessors) { #>
+    <#=c.Name#> -> <#=p.FactType#><#
+        if (p.Cardinality == Cardinality.Many) {
+            #> [label="  *"]<#
+        }
+        else if (p.Cardinality == Cardinality.Optional) {
+            #> [label="  ?"]<#
+        }
+        if (p.IsPivot) {
+            #> [color="red"]<#
+        } #>
+
+<#	}
+} #>
+}
+**/
+
+namespace <#=targetNamespace.Name#>
+{
+<# foreach (Class c in targetNamespace.Classes) { #>
+    public partial class <#=c.Name#> : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				<#=c.Name#> newFact = new <#=c.Name#>(memento);
+
+<# if (c.Fields.Any() || c.Unique) { #>
+				// Create a memory stream from the memento data.
+				using (MemoryStream data = new MemoryStream(memento.Data))
+				{
+					using (BinaryReader output = new BinaryReader(data))
+					{
+<# if (c.Unique) { #>
+						newFact._unique = (Guid)_fieldSerializerByType[typeof(Guid)].ReadData(output);
+<# } #>
+<# foreach (Field field in c.Fields) {#>
+						newFact._<#=field.Name#> = (<#=FieldType(field)#>)_fieldSerializerByType[typeof(<#=FieldType(field)#>)].ReadData(output);
+<#}#>
+					}
+				}
+<#}#>
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				<#=c.Name#> fact = (<#=c.Name#>)obj;
+<# if (c.Unique) { #>
+				_fieldSerializerByType[typeof(Guid)].WriteData(output, fact._unique);
+<# } #>
+<# foreach (Field field in c.Fields) {#>
+				_fieldSerializerByType[typeof(<#=FieldType(field)#>)].WriteData(output, fact._<#=field.Name#>);
+<#}#>
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return <#=c.Name#>.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return <#=c.Name#>.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"<#=targetNamespace.Name#>.<#=c.Name#>", <#=c.Version#>);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static <#=c.Name#> GetUnloadedInstance()
+        {
+            return new <#=c.Name#>((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static <#=c.Name#> GetNullInstance()
+        {
+            return new <#=c.Name#>((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<<#=c.Name#>> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (<#=c.Name#>)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+<# foreach (Predecessor predecessor in c.Predecessors) { #>
+        private static Role _cache<#=RoleName(predecessor.Name)#>;
+        public static Role Get<#=RoleName(predecessor.Name)#>()
+        {
+            if (_cache<#=RoleName(predecessor.Name)#> == null)
+            {
+                _cache<#=RoleName(predecessor.Name)#> = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "<#=predecessor.Name#>",
+			        <#=predecessor.FactType#>._correspondenceFactType,
+			        <#=predecessor.IsPivot ? "true" : "false"#>));
+            }
+            return _cache<#=RoleName(predecessor.Name)#>;
+        }
+<#}#>
+
+        // Queries
+<# foreach (Query query in c.Queries) { #>
+        private static Query _cache<#=QueryName(query.Name)#>;
+
+        public static Query Get<#=QueryName(query.Name)#>()
+		{
+            if (_cache<#=QueryName(query.Name)#> == null)
+            {
+			    _cache<#=QueryName(query.Name)#> = new Query()
+<# foreach (Join join in query.Joins) { #>
+<#   if (join.Conditions.Any()) { #>
+<#      Condition first = join.Conditions.First(); #>
+    				.Join<#=join.Direction#>(<#=join.Type#>.Get<#=RoleName(join.Name)#>(), Condition.WhereIs<#=first.Modifier == ConditionModifier.Positive ? "Not" : ""#>Empty(<#=first.Type#>.Get<#=QueryName(first.Name)#>())
+<#        foreach (Condition condition in join.Conditions.Skip(1)) { #>
+	    				.And().Is<#=condition.Modifier == ConditionModifier.Positive ? "Not" : ""#>Empty(<#=condition.Type#>.Get<#=QueryName(condition.Name)#>())
+<#        } #>
+				)
+<#   } else { #>
+		    		.Join<#=join.Direction#>(<#=join.Type#>.Get<#=RoleName(join.Name)#>())
+<#   }#>
+<#}#>
+                ;
+            }
+            return _cache<#=QueryName(query.Name)#>;
+		}
+<#}#>
+
+        // Predicates
+<# foreach (Predicate predicate in c.Predicates) { #>
+        public static Condition <#=Capitalize(predicate.Query.Name)#> = Condition.WhereIs<#=predicate.Modifier == ConditionModifier.Positive ? "Not" : ""#>Empty(Get<#=QueryName(predicate.Query.Name)#>());
+<#}#>
+
+        // Predecessors
+<# foreach (Predecessor predecessor in c.Predecessors) { #>
+        private <#=PredecessorClass(predecessor)#> _<#=predecessor.Name#>;
+<#}#>
+
+<# if (c.Unique) { #>
+        // Unique
+        private Guid _unique;
+
+<# } #>
+        // Fields
+<# foreach (Field field in c.Fields) {#>
+        private <#=FieldType(field)#> _<#=field.Name#>;
+<#}#>
+
+        // Results
+<# foreach (Result result in c.Results) { #>
+        private <#=ResultClass(result)#> _<#=result.Query.Name#>;
+<#}#>
+
+        // Business constructor
+        public <#=c.Name#>(
+<# SeparatorReset(); foreach (Predecessor predecessor in c.Predecessors) { #>
+            <#=Separator(",")#><#=ParameterType(predecessor)#> <#=predecessor.Name#>
+<#}#>
+<# foreach (Field field in c.Fields) {#>
+            <#=Separator(",")#><#=PropertyType(field)#> <#=field.Name#>
+<#}#>
+            )
+        {
+<# if (c.Unique) { #>
+            _unique = Guid.NewGuid();
+<# } #>
+            InitializeResults();
+<# foreach (Predecessor predecessor in c.Predecessors) { #>
+            _<#=predecessor.Name#> = new <#=PredecessorClass(predecessor)#>(this, Get<#=RoleName(predecessor.Name)#>(), <#=predecessor.Name#>);
+<#}#>
+<# foreach (Field field in c.Fields) {#>
+            _<#=field.Name#> = <#=field.Name#><#=(field.Cardinality == Cardinality.Many) ? ".ToList()" : ""#>;
+<#}#>
+        }
+
+        // Hydration constructor
+        private <#=c.Name#>(FactMemento memento)
+        {
+            InitializeResults();
+<# foreach (Predecessor predecessor in c.Predecessors) { #>
+            _<#=predecessor.Name#> = new <#=PredecessorClass(predecessor)#>(this, Get<#=RoleName(predecessor.Name)#>(), memento, <#=predecessor.FactType#>.GetUnloadedInstance, <#=predecessor.FactType#>.GetNullInstance);
+<#}#>
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+<# foreach (Result result in c.Results) { #>
+            _<#=result.Query.Name#> = new <#=ResultClass(result)#>(this, Get<#=QueryName(result.Query.Name)#>(), <#=result.Type#>.GetUnloadedInstance, <#=result.Type#>.GetNullInstance);
+<#}#>
+        }
+
+        // Predecessor access
+<# foreach (Predecessor predecessor in c.Predecessors) {
+        if (predecessor.Cardinality == Cardinality.Many) { #>
+        public PredecessorList<<#=predecessor.FactType#>> <#=Capitalize(predecessor.Name)#>
+        {
+            get { return _<#=predecessor.Name#>; }
+        }
+<# } else { #>
+        public <#=predecessor.FactType#> <#=Capitalize(predecessor.Name)#>
+        {
+            get { return IsNull ? <#=predecessor.FactType#>.GetNullInstance() : _<#=predecessor.Name#>.Fact; }
+        }
+<#}}#>
+
+        // Field access
+<# if (c.Unique) { #>
+		public Guid Unique { get { return _unique; } }
+
+<#}#>
+<# foreach (Field field in c.Fields) {#>
+        public <#=PropertyType(field)#> <#=Capitalize(field.Name)#>
+        {
+            get { return _<#=field.Name#>; }
+        }
+<#}#>
+
+        // Query result access
+<# foreach (Result result in c.Results.OfType<ResultDirect>()) { #>
+        public <#=ResultClass(result)#> <#=Capitalize(result.Query.Name)#>
+        {
+            get { return _<#=result.Query.Name#>; }
+        }
+<#}#>
+
+        // Mutable property access
+<# foreach (ResultValueNative result in c.Results.OfType<ResultValueNative>()) { #>
+        public TransientDisputable<<#=result.Type#>, <#=ResultTypeNative(result)#>> <#=Capitalize(result.Query.Name)#>
+        {
+            get { return _<#=result.Query.Name#>.AsTransientDisputable(fact => fact.Value); }
+			set
+			{
+                Action setter = async delegate()
+                {
+                    var current = (await _<#=result.Query.Name#>.EnsureAsync()).ToList();
+                    if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
+                    {
+                        await Community.AddFactAsync(new <#=result.Type#>(this, _<#=result.Query.Name#>, value.Value));
+                    }
+                };
+                setter();
+			}
+        }
+<#}#>
+
+<# foreach (ResultValueFact result in c.Results.OfType<ResultValueFact>()) { #>
+        public TransientDisputable<<#=result.Type#>, <#=ResultTypeFact(result)#>> <#=Capitalize(result.Query.Name)#>
+        {
+            get { return _<#=result.Query.Name#>.AsTransientDisputable(fact => (<#=ResultTypeFact(result)#>)fact.Value); }
+			set
+			{
+				Action setter = async delegate()
+				{
+					var current = (await _<#=result.Query.Name#>.EnsureAsync()).ToList();
+					if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
+					{
+						await Community.AddFactAsync(new <#=result.Type#>(this, _<#=result.Query.Name#>, value.Value));
+					}
+				};
+				setter();
+			}
+        }
+<#}#>
+    }
+    
+<#}#>
+
+	public class CorrespondenceModel : ICorrespondenceModel
+	{
+		public void RegisterAllFactTypes(Community community, IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+		{
+<# foreach (Class c in targetNamespace.Classes) { #>
+			community.AddType(
+				<#=c.Name#>._correspondenceFactType,
+				new <#=c.Name#>.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { <#=c.Name#>._correspondenceFactType }));
+<# foreach (Query query in c.Queries) { #>
+			community.AddQuery(
+				<#=c.Name#>._correspondenceFactType,
+				<#=c.Name#>.Get<#=QueryName(query.Name)#>().QueryDefinition);
+<#}#>
+<# foreach (Predecessor predecessor in c.Predecessors.Where(p => p.IsPivot && p.PublishConditions.Any())) { #>
+			community.AddUnpublisher(
+				<#=c.Name#>.Get<#=RoleName(predecessor.Name)#>(),
+<#      Condition first = predecessor.PublishConditions.First(); #>
+				Condition.WhereIs<#=first.Modifier == ConditionModifier.Positive ? "Not" : ""#>Empty(<#=first.Type#>.Get<#=QueryName(first.Name)#>())
+<#        foreach (Condition condition in predecessor.PublishConditions.Skip(1)) { #>
+					.And().Is<#=condition.Modifier == ConditionModifier.Positive ? "Not" : ""#>Empty(<#=condition.Type#>.Get<#=QueryName(condition.Name)#>())
+<#        } #>
+				);
+<#}#>
+<#}#>
+		}
+	}
+}
+<#}}#>
+<#+
+private static string Capitalize(string str)
+{
+    return str.Substring(0, 1).ToUpper() + str.Substring(1);
+}
+
+private static string RoleName(string predecessorName)
+{
+    return "Role" + Capitalize(predecessorName);
+}
+
+private static string QueryName(string queryName)
+{
+    return "Query" + Capitalize(queryName);
+}
+
+private static string ResultClass(Result result)
+{
+    return "Result<" + result.Type + ">";
+}
+
+private static string PredecessorClass(Predecessor predecessor)
+{
+    return
+        (predecessor.Cardinality == Cardinality.Many ? "PredecessorList" :
+         predecessor.Cardinality == Cardinality.Optional ? "PredecessorOpt" :
+         "PredecessorObj") +
+        "<" + predecessor.FactType + ">";
+}
+
+private static string ParameterType(Predecessor predecessor)
+{
+    if (predecessor.Cardinality == Cardinality.Many)
+        return string.Format("IEnumerable<{0}>", predecessor.FactType);
+    else
+        return predecessor.FactType;
+}
+
+private static string FieldType(Field field)
+{
+    if (field.Cardinality == Cardinality.One)
+        return NativeTypeName(field.NativeType);
+    else if (field.Cardinality == Cardinality.Many)
+        return string.Format("List<{0}>", NativeTypeName(field.NativeType));
+    else
+    {
+        if (IsReferenceType(field.NativeType))
+            return NativeTypeName(field.NativeType);
+        else
+            return string.Format("{0}?", NativeTypeName(field.NativeType));
+    }
+}
+
+private static string PropertyType(Field field)
+{
+    if (field.Cardinality == Cardinality.One)
+        return NativeTypeName(field.NativeType);
+    else if (field.Cardinality == Cardinality.Many)
+        return string.Format("IEnumerable<{0}>", NativeTypeName(field.NativeType));
+    else
+    {
+        if (IsReferenceType(field.NativeType))
+            return NativeTypeName(field.NativeType);
+        else
+            return string.Format("{0}?", NativeTypeName(field.NativeType));
+    }
+}
+
+private static string ResultTypeNative(ResultValueNative result)
+{
+    if (result.Cardinality == Cardinality.One)
+        return NativeTypeName(result.NativeType);
+    else if (result.Cardinality == Cardinality.Many)
+        return string.Format("IEnumerable<{0}>", NativeTypeName(result.NativeType));
+    else
+    {
+        if (IsReferenceType(result.NativeType))
+            return NativeTypeName(result.NativeType);
+        else
+            return string.Format("{0}?", NativeTypeName(result.NativeType));
+    }
+}
+
+private static string ResultTypeFact(ResultValueFact result)
+{
+    if (result.Cardinality == Cardinality.Many)
+        return string.Format("IEnumerable<{0}>", result.FactType);
+    else
+        return result.FactType;
+}
+
+private static string NativeTypeName(NativeType nativeType)
+{
+    if (nativeType == NativeType.String)
+        return "string";
+    if (nativeType == NativeType.Int)
+        return "int";
+    if (nativeType == NativeType.Float)
+        return "float";
+    if (nativeType == NativeType.Char)
+        return "char";
+    if (nativeType == NativeType.Date)
+        return "DateTime";
+    if (nativeType == NativeType.Time)
+        return "DateTime";
+    if (nativeType == NativeType.Byte)
+        return "byte";
+    return "UnknownType";
+}
+
+private static bool IsReferenceType(NativeType nativeType)
+{
+    return
+        nativeType == NativeType.String
+        ;
+}
+
+private bool _first;
+
+private void SeparatorReset()
+{
+    _first = true;
+}
+
+private string Separator(string text)
+{
+    if (!_first)
+        return text;
+    else
+    {
+        _first = false;
+        return string.Empty;
+    }
+}
+#>

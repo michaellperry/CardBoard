@@ -1,0 +1,6 @@
+namespace CardBoard;
+
+fact Individual {
+key:
+    string anonymousId;
+}
