@@ -101,20 +101,27 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Folder Include="Board\Models\" />
-    <Folder Include="Board\ViewModels\" />
     <Folder Include="Projects\Models\" />
-    <Folder Include="Projects\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Board\Models\CardDetailModel.cs" />
+    <Compile Include="Board\Models\CardEditedEventArgs.cs" />
+    <Compile Include="Board\Models\CardSelectionModel.cs" />
+    <Compile Include="Board\ViewModels\BoardViewModel.cs" />
+    <Compile Include="Board\ViewModels\CardViewModel.cs" />
+    <Compile Include="Board\ViewModels\ProjectDetailViewModel.cs" />
+    <Compile Include="Board\ViewModels\ProjectHeaderViewModel.cs" />
     <Compile Include="Board\Views\BoardPage.xaml.cs">
       <DependentUpon>BoardPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Board\Views\CardControl.xaml.cs">
       <DependentUpon>CardControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Board\Views\CardDetailControl.xaml.cs">
+      <DependentUpon>CardDetailControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Board\Views\FullScreenBoardControl.xaml.cs">
       <DependentUpon>FullScreenBoardControl.xaml</DependentUpon>
@@ -131,6 +138,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Projects\ViewModels\ProjectListViewModel.cs" />
     <Compile Include="Projects\Views\ProjectsPage.xaml.cs">
       <DependentUpon>ProjectsPage.xaml</DependentUpon>
     </Compile>
@@ -167,6 +175,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Board\Views\CardControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Board\Views\CardDetailControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

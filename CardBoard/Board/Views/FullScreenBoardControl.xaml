@@ -8,19 +8,34 @@
     mc:Ignorable="d"
     d:DesignHeight="800"
     d:DesignWidth="1200">
+    <UserControl.Resources>
+        <DataTemplate x:Key="CardItemTemplate">
+            <local:CardControl />
+        </DataTemplate>
+    </UserControl.Resources>
 
     <Grid
         Margin="10">
-    	<Grid.RowDefinitions>
-    		<RowDefinition Height="60"/>
-    		<RowDefinition/>
-    	</Grid.RowDefinitions>
-    	<Grid.ColumnDefinitions>
-    		<ColumnDefinition Width="1*"/>
-    		<ColumnDefinition Width="1*"/>
-    		<ColumnDefinition Width="1*"/>
-    	</Grid.ColumnDefinitions>
-    	<TextBlock TextWrapping="Wrap" Text="To Do" FontSize="32" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="60" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition
+                Width="1*" />
+            <ColumnDefinition
+                Width="1*" />
+            <ColumnDefinition
+                Width="1*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock
+            TextWrapping="Wrap"
+            Text="To Do"
+            FontSize="32"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Margin="10" />
         <ListView
             x:Name="ToDo"
             Grid.Column="0"
@@ -28,18 +43,20 @@
             CanDragItems="True"
             CanReorderItems="True"
             AllowDrop="True"
-            SelectionChanged="ToDo_SelectionChanged">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <local:CardControl />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <x:String>Do something awesome</x:String>
-            <x:String>Tell the world about it</x:String>
-            <x:String>Repeat</x:String>
+            SelectionChanged="ToDo_SelectionChanged"
+            Margin="10"
+            ItemsSource="{Binding ToDoCards}"
+            ItemTemplate="{StaticResource CardItemTemplate}">
         </ListView>
 
-        <TextBlock Grid.Column="1" TextWrapping="Wrap" Text="Doing" FontSize="32" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+        <TextBlock
+            Grid.Column="1"
+            TextWrapping="Wrap"
+            Text="Doing"
+            FontSize="32"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Margin="10" />
         <ListView
             x:Name="Doing"
             Grid.Column="1"
@@ -47,15 +64,18 @@
             CanDragItems="True"
             CanReorderItems="True"
             AllowDrop="True"
-            SelectionChanged="Doing_SelectionChanged">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <local:CardControl />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <x:String>Show them what you can do</x:String>
+            SelectionChanged="Doing_SelectionChanged"
+            ItemsSource="{Binding DoingCards}"
+            ItemTemplate="{StaticResource CardItemTemplate}">
         </ListView>
-        <TextBlock Grid.Column="2" TextWrapping="Wrap" Text="Done" FontSize="32" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+        <TextBlock
+            Grid.Column="2"
+            TextWrapping="Wrap"
+            Text="Done"
+            FontSize="32"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Margin="10" />
         <ListView
             x:Name="Done"
             Grid.Column="2"
@@ -63,14 +83,9 @@
             CanDragItems="True"
             CanReorderItems="True"
             AllowDrop="True"
-            SelectionChanged="Done_SelectionChanged">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <local:CardControl />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <x:String>Get praise</x:String>
-            <x:String>Give praise</x:String>
+            SelectionChanged="Done_SelectionChanged"
+            ItemsSource="{Binding DoneCards}"
+            ItemTemplate="{StaticResource CardItemTemplate}">
         </ListView>
 
     </Grid>

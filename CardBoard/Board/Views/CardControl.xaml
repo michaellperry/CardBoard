@@ -12,14 +12,14 @@
     <Grid>
         <Viewbox
             Margin="10"><Border
-            Background="#EDED60"
+            Background="{StaticResource CardBackgroundBrush}"
                 Width="300"
                 Height="180">
             <TextBlock
-                Text="{Binding}"
+                Text="{Binding Text}"
                 Foreground="Black"
                 Margin="10"
-                FontSize="26"
+                FontSize="26.667"
                 TextWrapping="Wrap"/>
         </Border></Viewbox>
     </Grid>

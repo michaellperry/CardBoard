@@ -9,6 +9,9 @@ namespace CardBoard.ViewModels
     {
         private readonly SynchronizationService _synchronizationService;
 
+        private Board.Models.CardSelectionModel _cardSelectionModel =
+            new Board.Models.CardSelectionModel();
+
         public ViewModelLocator()
         {
             _synchronizationService = new SynchronizationService();
@@ -16,13 +19,23 @@ namespace CardBoard.ViewModels
                 _synchronizationService.Initialize();
         }
 
-        public object Main
+        public object Board
+        {
+            get
+            {
+                return ViewModel(() => new Board.ViewModels.BoardViewModel(
+                    _synchronizationService,
+                    _cardSelectionModel));
+            }
+        }
+
+        public object ProjectList
         {
             get
             {
                 return ViewModel(() => _synchronizationService.Individual == null
                     ? null :
-                    new MainViewModel(
+                    new Projects.ViewModels.ProjectListViewModel(
                         _synchronizationService.Community,
                         _synchronizationService.Individual));
             }

@@ -5,50 +5,46 @@
     xmlns:local="using:CardBoard.Board.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-	<Page.Resources>
-		<ItemsPanelTemplate x:Key="ProjectsItemsPanelTemplate">
-			<VirtualizingStackPanel Orientation="Horizontal" VerticalAlignment="Top" />
-		</ItemsPanelTemplate>
-		<DataTemplate x:Key="ProjectItemTemplate">
-			<Grid Width="180" Background="#FF113C4B" HorizontalAlignment="Left" Height="120">
-				<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding}" VerticalAlignment="Top" FontSize="21.333" Margin="10"/>
-			</Grid>
-		</DataTemplate>
-	</Page.Resources>
-	<Page.TopAppBar>
-		<AppBar>
-			<ListView ItemsPanel="{StaticResource ProjectsItemsPanelTemplate}" ItemTemplate="{StaticResource ProjectItemTemplate}" VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="130">
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-				<x:String>Parse Mobile Backend as a Service</x:String>
-				<x:String>Correspondence on iOS</x:String>
-				<x:String>XAML Patterns</x:String>
-			</ListView>
-		</AppBar>
-	</Page.TopAppBar>
+    mc:Ignorable="d"
+    DataContext="{Binding Board, Source={StaticResource Locator}}">
+    <Page.Resources>
+        <ItemsPanelTemplate
+            x:Key="ProjectsItemsPanelTemplate">
+            <VirtualizingStackPanel
+                Orientation="Horizontal"
+                VerticalAlignment="Top" />
+        </ItemsPanelTemplate>
+        <DataTemplate
+            x:Key="ProjectItemTemplate">
+            <Grid
+                Width="180"
+                Background="#FF113C4B"
+                HorizontalAlignment="Left"
+                Height="120">
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    TextWrapping="Wrap"
+                    Text="{Binding Name}"
+                    VerticalAlignment="Top"
+                    FontSize="21.333"
+                    Margin="10" />
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Page.TopAppBar>
+        <AppBar>
+            <ListView
+                ItemsPanel="{StaticResource ProjectsItemsPanelTemplate}"
+                ItemTemplate="{StaticResource ProjectItemTemplate}"
+                ItemsSource="{Binding Projects}"
+                SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
+                VerticalContentAlignment="Stretch"
+                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                Height="130">
+            </ListView>
+        </AppBar>
+    </Page.TopAppBar>
 
     <Grid
         Background="#FF040F13">
@@ -68,7 +64,7 @@
             </Grid.RowDefinitions>
             <TextBlock
                 TextWrapping="Wrap"
-                Text="Board"
+                Text="{Binding ProjectName}"
                 Style="{StaticResource HeaderTextStyle}"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
@@ -98,27 +94,40 @@
                 Height="40"
                 Grid.Column="2"
                 IsActive="{Binding Busy}" />
-            <local:FullScreenBoardControl Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <local:FullScreenBoardControl
+                Grid.Column="1"
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                DataContext="{Binding ProjectDetail}" />
         </Grid>
     </Grid>
     <Page.BottomAppBar>
         <AppBar>
             <Grid>
-        		<StackPanel
-        			Orientation="Horizontal"
-        			HorizontalAlignment="Right">
-        			<Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource DeleteCardAppBarButtonStyle}"/>
-        			<Button
-        				Style="{StaticResource EditCardAppBarButtonStyle}"
-        				Command="{Binding EditBill}" />
-        			<Button
-        				Style="{StaticResource AddCardAppBarButtonStyle}"
-        				Command="{Binding NewBill}" />
-        		</StackPanel>
-        		<StackPanel HorizontalAlignment="Left">
-        			<Button HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ManageProjectsAppBarButtonStyle}" Click="ManageProjects_Click"/>
-        		</StackPanel>
-        	</Grid>
+                <StackPanel
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Style="{StaticResource DeleteCardAppBarButtonStyle}"
+                        Command="{Binding DeleteCard}" />
+                    <Button
+                        Style="{StaticResource EditCardAppBarButtonStyle}"
+                        Command="{Binding EditCard}" />
+                    <Button
+                        Style="{StaticResource AddCardAppBarButtonStyle}"
+                        Command="{Binding NewCard}" />
+                </StackPanel>
+                <StackPanel
+                    HorizontalAlignment="Left">
+                    <Button
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource ManageProjectsAppBarButtonStyle}"
+                        Click="ManageProjects_Click" />
+                </StackPanel>
+            </Grid>
         </AppBar>
     </Page.BottomAppBar>
 </Page>
