@@ -25,29 +25,29 @@ namespace CardBoard.Board.Views
 
         private void ToDo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Any())
-            {
-                Doing.SelectedItem = null;
-                Done.SelectedItem = null;
-            }
+            //if (e.AddedItems.Any())
+            //{
+            //    Doing.SelectedItem = null;
+            //    Done.SelectedItem = null;
+            //}
         }
 
         private void Doing_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Any())
-            {
-                ToDo.SelectedItem = null;
-                Done.SelectedItem = null;
-            }
+            //if (e.AddedItems.Any())
+            //{
+            //    ToDo.SelectedItem = null;
+            //    Done.SelectedItem = null;
+            //}
         }
 
         private void Done_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Any())
-            {
-                ToDo.SelectedItem = null;
-                Doing.SelectedItem = null;
-            }
+            //if (e.AddedItems.Any())
+            //{
+            //    ToDo.SelectedItem = null;
+            //    Doing.SelectedItem = null;
+            //}
         }
     }
 }

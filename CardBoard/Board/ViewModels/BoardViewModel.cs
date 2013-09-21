@@ -94,7 +94,8 @@ namespace CardBoard.Board.ViewModels
                 return new ProjectDetailViewModel(
                     _synchronizationService.Community,
                     _synchronizationService.Individual,
-                    _synchronizationService.Project);
+                    _synchronizationService.Project,
+                    _cardSelectionModel);
             }
         }
 

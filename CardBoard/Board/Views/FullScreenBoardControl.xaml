@@ -43,9 +43,8 @@
             CanDragItems="True"
             CanReorderItems="True"
             AllowDrop="True"
-            SelectionChanged="ToDo_SelectionChanged"
-            Margin="10"
             ItemsSource="{Binding ToDoCards}"
+            SelectedItem="{Binding SelectedToDoCard, Mode=TwoWay}"
             ItemTemplate="{StaticResource CardItemTemplate}">
         </ListView>
 
@@ -64,8 +63,8 @@
             CanDragItems="True"
             CanReorderItems="True"
             AllowDrop="True"
-            SelectionChanged="Doing_SelectionChanged"
             ItemsSource="{Binding DoingCards}"
+            SelectedItem="{Binding SelectedDoingCard, Mode=TwoWay}"
             ItemTemplate="{StaticResource CardItemTemplate}">
         </ListView>
         <TextBlock
@@ -83,8 +82,8 @@
             CanDragItems="True"
             CanReorderItems="True"
             AllowDrop="True"
-            SelectionChanged="Done_SelectionChanged"
             ItemsSource="{Binding DoneCards}"
+            SelectedItem="{Binding SelectedDoneCard, Mode=TwoWay}"
             ItemTemplate="{StaticResource CardItemTemplate}">
         </ListView>
 
