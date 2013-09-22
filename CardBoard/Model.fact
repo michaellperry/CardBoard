@@ -34,6 +34,14 @@ query:
     Column* columns {
         Column c : c.project = this
     }
+
+    Card* cards {
+        Column c : c.project = this
+        CardColumn cc : cc.column = c
+            where cc.isCurrent
+        Card card : cc.card = card
+            where not card.isDeleted
+    }
 }
 
 fact Member {

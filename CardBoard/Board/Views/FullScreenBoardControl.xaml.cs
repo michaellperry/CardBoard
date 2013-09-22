@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CardBoard.Board.ViewModels;
+using UpdateControls.XAML;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -48,6 +51,35 @@ namespace CardBoard.Board.Views
             //    ToDo.SelectedItem = null;
             //    Doing.SelectedItem = null;
             //}
+        }
+
+        private void CardList_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        {
+            var cardViewModel = ForView.Unwrap<CardViewModel>(e.Items.FirstOrDefault());
+            if (cardViewModel != null)
+            {
+                var card = cardViewModel.Card;
+                e.Data.SetUri(ProjectDetailViewModel.UriOfCard(card));
+            }
+        }
+
+        private async void CardList_Drop(object sender, DragEventArgs e)
+        {
+            var viewModel = ForView.Unwrap<ProjectDetailViewModel>(DataContext);
+            if (viewModel == null)
+                return;
+
+            var url = await e.Data.GetView().GetUriAsync();
+
+            int columnIndex =
+                sender == ToDo ? 0 :
+                sender == Doing ? 1 :
+                sender == Done ? 2 :
+                    -1;
+            if (columnIndex == -1)
+                return;
+
+            await viewModel.MoveCard(url, columnIndex);
         }
     }
 }

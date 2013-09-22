@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CardBoard.Board.Models;
 using UpdateControls.Correspondence;
 using UpdateControls.Fields;
@@ -66,6 +68,29 @@ namespace CardBoard.Board.ViewModels
             set { if (value != null) _cardSelectionModel.SelectedCard = value.Card; }
         }
 
+        public async Task MoveCard(Uri url, int columnIndex)
+        {
+            var cards = await _project.Cards.EnsureAsync();
+            var card = cards.FirstOrDefault(c => UriOfCard(c) == url);
+            if (card == null)
+                return;
+
+            var column =
+                columnIndex == 0 ? await _project.MakeColumnAsync("To Do") :
+                columnIndex == 1 ? await _project.MakeColumnAsync("Doing") :
+                columnIndex == 2 ? await _project.MakeColumnAsync("Done") :
+                    null;
+            if (column == null)
+                return;
+
+            var cardColumns = await card.CardColumns.EnsureAsync();
+            if (cardColumns.Count() == 1 &&
+                cardColumns.Single().Column == column)
+                return;
+
+            await _community.AddFactAsync(new CardColumn(card, column, cardColumns));
+        }
+
         private IEnumerable<CardViewModel> CardsInColumn(Column column)
         {
             if (column == null)
@@ -91,6 +116,15 @@ namespace CardBoard.Board.ViewModels
         private Column GetColumn(Project project, string name)
         {
             return project.Columns.FirstOrDefault(c => c.Name.Value == name);
+        }
+
+        public static Uri UriOfCard(Card card)
+        {
+            return new Uri(
+                String.Format("cardboard://card/{0}/{1}",
+                    card.Created.Ticks,
+                    card.Unique),
+                UriKind.Absolute);
         }
     }
 }

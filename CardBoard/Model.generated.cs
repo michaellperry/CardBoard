@@ -308,6 +308,22 @@ namespace CardBoard
             }
             return _cacheQueryColumns;
 		}
+        private static Query _cacheQueryCards;
+
+        public static Query GetQueryCards()
+		{
+            if (_cacheQueryCards == null)
+            {
+			    _cacheQueryCards = new Query()
+		    		.JoinSuccessors(Column.GetRoleProject())
+    				.JoinSuccessors(CardColumn.GetRoleColumn(), Condition.WhereIsEmpty(CardColumn.GetQueryIsCurrent())
+				)
+    				.JoinPredecessors(CardColumn.GetRoleCard(), Condition.WhereIsEmpty(Card.GetQueryIsDeleted())
+				)
+                ;
+            }
+            return _cacheQueryCards;
+		}
 
         // Predicates
 
@@ -320,6 +336,7 @@ namespace CardBoard
         // Results
         private Result<Project__name> _name;
         private Result<Column> _columns;
+        private Result<Card> _cards;
 
         // Business constructor
         public Project(
@@ -343,6 +360,7 @@ namespace CardBoard
         {
             _name = new Result<Project__name>(this, GetQueryName(), Project__name.GetUnloadedInstance, Project__name.GetNullInstance);
             _columns = new Result<Column>(this, GetQueryColumns(), Column.GetUnloadedInstance, Column.GetNullInstance);
+            _cards = new Result<Card>(this, GetQueryCards(), Card.GetUnloadedInstance, Card.GetNullInstance);
         }
 
         // Predecessor access
@@ -361,6 +379,10 @@ namespace CardBoard
         public Result<Column> Columns
         {
             get { return _columns; }
+        }
+        public Result<Card> Cards
+        {
+            get { return _cards; }
         }
 
         // Mutable property access
@@ -2312,6 +2334,9 @@ namespace CardBoard
 			community.AddQuery(
 				Project._correspondenceFactType,
 				Project.GetQueryColumns().QueryDefinition);
+			community.AddQuery(
+				Project._correspondenceFactType,
+				Project.GetQueryCards().QueryDefinition);
 			community.AddType(
 				Project__name._correspondenceFactType,
 				new Project__name.CorrespondenceFactFactory(fieldSerializerByType),

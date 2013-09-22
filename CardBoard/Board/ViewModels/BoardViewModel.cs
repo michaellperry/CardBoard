@@ -178,22 +178,7 @@ namespace CardBoard.Board.ViewModels
                     new Card(project, DateTime.Now));
                 cardDetail.ToCard(card);
 
-                Column column = null;
-                var columns = await _synchronizationService.Project.Columns.EnsureAsync();
-                foreach (var c in columns)
-                {
-                    if ((await c.Name.EnsureAsync()).Value == "To Do")
-                    {
-                        column = c;
-                        break;
-                    }
-                }
-                if (column == null)
-                {
-                    column = await _synchronizationService.Community
-                        .AddFactAsync(new Column(project));
-                    column.Name = "To Do";
-                }
+                Column column = await _synchronizationService.Project.MakeColumnAsync("To Do");
                 await _synchronizationService.Community.AddFactAsync(
                     new CardColumn(card, column, Enumerable.Empty<CardColumn>()));
 

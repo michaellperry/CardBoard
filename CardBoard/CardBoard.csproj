@@ -129,6 +129,7 @@
     <Compile Include="Board\Views\SnappedBoardControl.xaml.cs">
       <DependentUpon>SnappedBoardControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\AsyncEnumerable.cs" />
     <Compile Include="HTTPConfigurationProvider.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -138,6 +139,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Project.cs" />
     <Compile Include="Projects\ViewModels\ProjectListViewModel.cs" />
     <Compile Include="Projects\Views\ProjectsPage.xaml.cs">
       <DependentUpon>ProjectsPage.xaml</DependentUpon>
