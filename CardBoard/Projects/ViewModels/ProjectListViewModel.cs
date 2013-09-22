@@ -27,6 +27,22 @@ namespace CardBoard.Projects.ViewModels
             _projectSelectionModel = projectSelectionModel;
         }
 
+        public string LastError
+        {
+            get
+            {
+                if (_synchronizationService.Community.LastException == null)
+                    return null;
+
+                return _synchronizationService.Community.LastException.Message;
+            }
+        }
+
+        public bool Busy
+        {
+            get { return _synchronizationService.Community.Synchronizing; }
+        }
+
         public IEnumerable<ProjectHeaderViewModel> Projects
         {
             get
