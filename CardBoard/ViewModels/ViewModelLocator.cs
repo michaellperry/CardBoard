@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Linq;
 using UpdateControls.XAML;
 
 namespace CardBoard.ViewModels
@@ -11,6 +8,8 @@ namespace CardBoard.ViewModels
 
         private Board.Models.CardSelectionModel _cardSelectionModel =
             new Board.Models.CardSelectionModel();
+        private Projects.Models.ProjectSelectionModel _projectSelectionModel =
+            new Projects.Models.ProjectSelectionModel();
 
         public ViewModelLocator()
         {
@@ -36,8 +35,9 @@ namespace CardBoard.ViewModels
                 return ViewModel(() => _synchronizationService.Individual == null
                     ? null :
                     new Projects.ViewModels.ProjectListViewModel(
-                        _synchronizationService.Community,
-                        _synchronizationService.Individual));
+                        _synchronizationService,
+                        _synchronizationService.Individual,
+                        _projectSelectionModel));
             }
         }
     }

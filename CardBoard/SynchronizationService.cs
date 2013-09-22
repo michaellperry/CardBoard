@@ -1,15 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CardBoard.Common;
 using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.BinaryHTTPClient;
 using UpdateControls.Correspondence.FileStream;
 using UpdateControls.Fields;
-using Windows.Storage;
 using Windows.UI.Xaml;
 
 namespace CardBoard
@@ -18,7 +15,6 @@ namespace CardBoard
     {
         private const string ThisIndividual = "CardBoard.Individual.this";
         private const string CurrentProject = "CardBoard.Project.current";
-        private static readonly Regex Punctuation = new Regex(@"[{}\-]");
 
         private Community _community;
         private Independent<Individual> _individual = new Independent<Individual>();
@@ -143,7 +139,7 @@ namespace CardBoard
             if (individual == null)
             {
                 individual = await _community.AddFactAsync(
-                    new Individual(DateTime.Now, GenerateRandomId()));
+                    new Individual(DateTime.Now, Utilities.GenerateRandomId()));
                 await _community.SetFactAsync(ThisIndividual, individual);
             }
             lock (this)
@@ -162,15 +158,10 @@ namespace CardBoard
             if (project == null || !projects.Contains(project))
             {
                 project = await _community.AddFactAsync(
-                    new Project(DateTime.Now, GenerateRandomId()));
+                    new Project(DateTime.Now, Utilities.GenerateRandomId()));
+                project.Name = "My Project";
                 await _community.AddFactAsync(new Member(individual, project));
                 await _community.SetFactAsync(CurrentProject, project);
-            }
-
-            string title = await project.Name.EnsureAsync();
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                project.Name = "My Project";
             }
 
             lock (this)
@@ -178,11 +169,6 @@ namespace CardBoard
                 _project.Value = project;
             }
             return project;
-        }
-
-        private static string GenerateRandomId()
-        {
-            return Punctuation.Replace(Guid.NewGuid().ToString(), String.Empty).ToLower();
         }
     }
 }

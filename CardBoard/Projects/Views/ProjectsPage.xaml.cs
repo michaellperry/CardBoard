@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using CardBoard.Projects.ViewModels;
+using UpdateControls.XAML;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace CardBoard.Projects.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class ProjectsPage : Page
     {
         public ProjectsPage()
@@ -26,13 +15,52 @@ namespace CardBoard.Projects.Views
             this.InitializeComponent();
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.  The Parameter
-        /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            var viewModel = ForView.Unwrap<ProjectListViewModel>(DataContext);
+            if (viewModel != null)
+            {
+                viewModel.ProjectEdited += ProjectEdited;
+            }
+
+            base.OnNavigatedTo(e);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            var viewModel = ForView.Unwrap<ProjectListViewModel>(DataContext);
+            if (viewModel != null)
+            {
+                viewModel.ProjectEdited -= ProjectEdited;
+            }
+
+            base.OnNavigatedFrom(e);
+        }
+
+        void ProjectEdited(object sender, Models.ProjectEditedEventArgs args)
+        {
+            Popup popup = new Popup()
+            {
+                ChildTransitions = new TransitionCollection { new PopupThemeTransition() }
+            };
+            var detail = new ProjectDetailControl()
+            {
+                Width = Window.Current.Bounds.Width,
+                Height = Window.Current.Bounds.Height,
+                DataContext = args.ProjectDetail
+            };
+            detail.Ok += delegate
+            {
+                popup.IsOpen = false;
+                if (args.Completed != null)
+                    args.Completed(args.ProjectDetail);
+            };
+            detail.Cancel += delegate
+            {
+                popup.IsOpen = false;
+            };
+            popup.Child = detail;
+            popup.IsOpen = true;
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)

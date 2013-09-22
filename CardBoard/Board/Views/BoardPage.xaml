@@ -47,7 +47,7 @@
     </Page.TopAppBar>
 
     <Grid
-        Background="#FF040F13">
+        Background="#114253">
         <Grid
             Margin="20">
             <Grid.ColumnDefinitions>

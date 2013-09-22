@@ -5,30 +5,53 @@
     xmlns:local="using:CardBoard.Projects.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-	<Page.Resources>
-		<DataTemplate x:Key="ProjectItemTemplate">
-			<Grid>
-				<TextBlock HorizontalAlignment="Left" Text="{Binding}" VerticalAlignment="Top" FontSize="21.333" Margin="10"/>
-			</Grid>
-		</DataTemplate>
-	</Page.Resources>
-	<Page.BottomAppBar>
-		<AppBar>
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
-				<StackPanel Orientation="Horizontal"/>
-				<StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
-					<Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource DeleteProjectAppBarButtonStyle}"/>
-					<Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource EditProjectAppBarButtonStyle}"/>
-					<Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource AddProjectAppBarButtonStyle}"/>
-				</StackPanel>
-			</Grid>
-		</AppBar>
-	</Page.BottomAppBar>
+    mc:Ignorable="d"
+    DataContext="{Binding ProjectList, Source={StaticResource Locator}}">
+    <Page.Resources>
+        <DataTemplate
+            x:Key="ProjectItemTemplate">
+            <Grid>
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    Text="{Binding Name}"
+                    VerticalAlignment="Top"
+                    FontSize="21.333"
+                    Margin="10" />
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Page.BottomAppBar>
+        <AppBar>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    Orientation="Horizontal" />
+                <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Style="{StaticResource DeleteProjectAppBarButtonStyle}"
+                        Command="{Binding DeleteProject}" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Style="{StaticResource EditProjectAppBarButtonStyle}"
+                        Command="{Binding EditProject}"/>
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Style="{StaticResource AddProjectAppBarButtonStyle}"
+                        Command="{Binding AddProject}" />
+                </StackPanel>
+            </Grid>
+        </AppBar>
+    </Page.BottomAppBar>
 
     <Grid
         Background="#FF040F13">
@@ -58,7 +81,8 @@
                 Style="{StaticResource BackButtonStyle}"
                 Margin="16,0"
                 HorizontalAlignment="Center"
-                Click="Back_Click" Height="64"/>
+                Click="Back_Click"
+                Height="64" />
             <TextBlock
                 HorizontalAlignment="Right"
                 TextWrapping="Wrap"
@@ -76,10 +100,13 @@
                 Height="40"
                 Grid.Column="2"
                 IsActive="{Binding Busy}" />
-            <ListView Grid.Column="1" Grid.Row="1" ItemTemplate="{StaticResource ProjectItemTemplate}" Margin="10">
-            	<x:String>XAML Patterns</x:String>
-            	<x:String>Correspondence on iOS</x:String>
-            	<x:String>Parse Mobile Backend as a Service</x:String>
+            <ListView
+                Grid.Column="1"
+                Grid.Row="1"
+                ItemsSource="{Binding Projects}"
+                SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
+                ItemTemplate="{StaticResource ProjectItemTemplate}"
+                Margin="10">
             </ListView>
         </Grid>
     </Grid>

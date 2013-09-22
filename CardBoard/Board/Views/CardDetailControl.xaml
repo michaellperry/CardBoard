@@ -141,7 +141,7 @@
     
     <Grid
         Background="#40000000">
-        <Border Background="Gainsboro" VerticalAlignment="Center">
+        <Border Background="#FF959595" VerticalAlignment="Center">
             <StackPanel Margin="10" HorizontalAlignment="Center">
                 <Border
                     Height="270"
@@ -150,7 +150,7 @@
                     <TextBox
                         x:Name="CardTextBox"
                         Text="{Binding Text, Mode=TwoWay}"
-                        Margin="10" FontSize="32" TextWrapping="Wrap" Style="{StaticResource CardTextBoxStyle}" Background="Transparent"/>
+                        Margin="10" FontSize="32" TextWrapping="Wrap" Style="{StaticResource CardTextBoxStyle}" Background="Transparent" BorderBrush="{x:Null}"/>
                 </Border>
                 <StackPanel
                     Orientation="Horizontal"
