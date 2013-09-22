@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CardBoard.Board.ViewModels;
 using UpdateControls.XAML;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using UpdateControls.XAML.Wrapper;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media.Animation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -26,32 +19,7 @@ namespace CardBoard.Board.Views
             this.InitializeComponent();
         }
 
-        private void ToDo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if (e.AddedItems.Any())
-            //{
-            //    Doing.SelectedItem = null;
-            //    Done.SelectedItem = null;
-            //}
-        }
-
-        private void Doing_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if (e.AddedItems.Any())
-            //{
-            //    ToDo.SelectedItem = null;
-            //    Done.SelectedItem = null;
-            //}
-        }
-
-        private void Done_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if (e.AddedItems.Any())
-            //{
-            //    ToDo.SelectedItem = null;
-            //    Doing.SelectedItem = null;
-            //}
-        }
+        private Card _draggingCard;
 
         private void CardList_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
@@ -59,6 +27,7 @@ namespace CardBoard.Board.Views
             if (cardViewModel != null)
             {
                 var card = cardViewModel.Card;
+                _draggingCard = card;
                 e.Data.SetUri(ProjectDetailViewModel.UriOfCard(card));
             }
         }
@@ -69,8 +38,6 @@ namespace CardBoard.Board.Views
             if (viewModel == null)
                 return;
 
-            var url = await e.Data.GetView().GetUriAsync();
-
             int columnIndex =
                 sender == ToDo ? 0 :
                 sender == Doing ? 1 :
@@ -79,7 +46,45 @@ namespace CardBoard.Board.Views
             if (columnIndex == -1)
                 return;
 
-            await viewModel.MoveCard(url, columnIndex);
+            e.Handled = true;
+
+            RemoveFromLists();
+
+            var uri = await e.Data.GetView().GetUriAsync();
+
+            await viewModel.MoveCard(uri, columnIndex);
+        }
+
+        private void RemoveFromLists()
+        {
+            RemoveFromList(ToDo);
+            RemoveFromList(Doing);
+            RemoveFromList(Done);
+        }
+
+        private void RemoveFromList(ListView listView)
+        {
+            TransitionCollection saveTransitions = listView.ItemContainerTransitions;
+            listView.ItemContainerTransitions = new TransitionCollection();
+
+            var observableCollection = listView.ItemsSource as ObservableCollection<object>;
+            if (observableCollection == null)
+                return;
+
+            var removed = observableCollection
+                .OfType<IObjectInstance>()
+                .Where(wrapper =>
+                {
+                    CardViewModel viewModel = wrapper.WrappedObject as CardViewModel;
+                    if (viewModel == null)
+                        return false;
+                    return viewModel.Card == _draggingCard;
+                })
+                .ToList();
+            foreach (var obj in removed)
+                observableCollection.Remove(obj);
+
+            listView.ItemContainerTransitions = saveTransitions;
         }
     }
 }

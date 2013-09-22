@@ -28,7 +28,7 @@ namespace CardBoard.Board.ViewModels
             CardViewModel that = obj as CardViewModel;
             if (that == null)
                 return false;
-            return Object.Equals(this._card, that);
+            return Object.Equals(this._card, that._card);
         }
 
         public override int GetHashCode()

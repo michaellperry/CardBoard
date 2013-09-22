@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>CardBoard_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -219,23 +220,29 @@
     <Reference Include="UpdateControls, Version=2.2.2.1, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
       <HintPath>..\packages\UpdateControls.2.2.5.1\lib\windows8\UpdateControls.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence">
-      <HintPath>..\packages\Correspondence.2.1.0.0\lib\windows8\UpdateControls.Correspondence.dll</HintPath>
+    <Reference Include="UpdateControls.Correspondence, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Correspondence.2.1.0.1\lib\windows8\UpdateControls.Correspondence.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient">
-      <HintPath>..\packages\Correspondence.App.2.0.0.0\lib\windows8\UpdateControls.Correspondence.BinaryHTTPClient.dll</HintPath>
+    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.BinaryHTTPClient.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient.Notification">
-      <HintPath>..\packages\Correspondence.App.2.0.0.0\lib\windows8\UpdateControls.Correspondence.BinaryHTTPClient.Notification.dll</HintPath>
+    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient.Notification, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.BinaryHTTPClient.Notification.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.Data">
-      <HintPath>..\packages\Correspondence.App.2.0.0.0\lib\windows8\UpdateControls.Correspondence.Data.dll</HintPath>
+    <Reference Include="UpdateControls.Correspondence.Data, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.Data.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.FileStream">
-      <HintPath>..\packages\Correspondence.App.2.0.0.0\lib\windows8\UpdateControls.Correspondence.FileStream.dll</HintPath>
+    <Reference Include="UpdateControls.Correspondence.FileStream, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.FileStream.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.Memory">
-      <HintPath>..\packages\Correspondence.App.2.0.0.0\lib\windows8\UpdateControls.Correspondence.Memory.dll</HintPath>
+    <Reference Include="UpdateControls.Correspondence.Memory, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.Memory.dll</HintPath>
     </Reference>
     <Reference Include="UpdateControls.XAML, Version=2.2.2.1, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
       <HintPath>..\packages\UpdateControls.2.2.5.1\lib\windows8\UpdateControls.XAML.dll</HintPath>

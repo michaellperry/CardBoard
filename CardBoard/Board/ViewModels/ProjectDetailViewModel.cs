@@ -68,10 +68,10 @@ namespace CardBoard.Board.ViewModels
             set { if (value != null) _cardSelectionModel.SelectedCard = value.Card; }
         }
 
-        public async Task MoveCard(Uri url, int columnIndex)
+        public async Task MoveCard(Uri uri, int columnIndex)
         {
             var cards = await _project.Cards.EnsureAsync();
-            var card = cards.FirstOrDefault(c => UriOfCard(c) == url);
+            var card = cards.FirstOrDefault(c => UriOfCard(c) == uri);
             if (card == null)
                 return;
 
