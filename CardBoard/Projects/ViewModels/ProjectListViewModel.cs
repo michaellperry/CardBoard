@@ -48,9 +48,9 @@ namespace CardBoard.Projects.ViewModels
             }
             set
             {
-                if (value == null)
-                    _projectSelectionModel.SelectedProject = null;
-                _projectSelectionModel.SelectedProject = value.Project;
+                _projectSelectionModel.SelectedProject = value == null
+                    ? null
+                    : value.Project;
             }
         }
 
@@ -117,6 +117,12 @@ namespace CardBoard.Projects.ViewModels
                     .Where(m => m.Project == project);
                 foreach (var member in members)
                     await member.Community.AddFactAsync(new MemberDelete(member));
+
+                if (_synchronizationService.Project == project)
+                {
+                    var projects = await _individual.Projects.EnsureAsync();
+                    _synchronizationService.Project = projects.FirstOrDefault();
+                }
             }
             catch (Exception x)
             {
