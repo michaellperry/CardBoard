@@ -12,7 +12,7 @@ using System.IO;
 digraph "CardBoard"
 {
     rankdir=BT
-    Project__name -> Project
+    Project__name -> Project [color="red"]
     Project__name -> Project__name [label="  *"]
     Member -> Individual [color="red"]
     Member -> Project
@@ -452,7 +452,7 @@ namespace CardBoard
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"CardBoard.Project__name", 83633920);
+			"CardBoard.Project__name", 83639396);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -489,7 +489,7 @@ namespace CardBoard
 			        _correspondenceFactType,
 			        "project",
 			        Project._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleProject;
         }

@@ -120,12 +120,18 @@
                         Command="{Binding NewCard}" />
                 </StackPanel>
                 <StackPanel
+                    Orientation="Horizontal"
                     HorizontalAlignment="Left">
                     <Button
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Style="{StaticResource ManageProjectsAppBarButtonStyle}"
                         Click="ManageProjects_Click" />
+                    <Button
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource RefreshAppBarButtonStyle}"
+                        Command="{Binding Refresh}" />
                 </StackPanel>
             </Grid>
         </AppBar>

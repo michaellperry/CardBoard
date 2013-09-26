@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace CardBoard.Board.ViewModels
 {
@@ -19,6 +20,11 @@ namespace CardBoard.Board.ViewModels
         public string Text
         {
             get { return _card.Text; }
+        }
+
+        public bool Conflict
+        {
+            get { return _card.CardColumns.Count() > 1; }
         }
 
         public override bool Equals(object obj)

@@ -39,6 +39,16 @@ namespace CardBoard.Board.ViewModels
             get { return _synchronizationService.Community.Synchronizing; }
         }
 
+        public ICommand Refresh
+        {
+            get
+            {
+                return MakeCommand
+                    .When(() => !_synchronizationService.Community.Synchronizing)
+                    .Do(() => _synchronizationService.Community.SynchronizeAsync());
+            }
+        }
+
         public string ProjectName
         {
             get

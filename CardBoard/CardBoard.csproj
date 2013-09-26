@@ -153,6 +153,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SynchronizationService.cs" />
+    <Compile Include="ValueConverters\ConflictValueConverter.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>

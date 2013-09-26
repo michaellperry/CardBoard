@@ -28,7 +28,7 @@ key:
     string identifier;
 
 mutable:
-    string name;
+    publish string name;
 
 query:
     Column* columns {

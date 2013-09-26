@@ -27,10 +27,10 @@ namespace CardBoard
             var communication = new BinaryHTTPAsynchronousCommunicationStrategy(http);
 
             _community = new Community(storage);
-            //_community.AddAsynchronousCommunicationStrategy(communication);
+            _community.AddAsynchronousCommunicationStrategy(communication);
             _community.Register<CorrespondenceModel>();
             _community.Subscribe(() => _individual.Value);
-            _community.Subscribe(() => _individual.Value == null ? null :
+            _community.Subscribe(() => _individual.Value == null ? Enumerable.Empty<Project>() :
                 _individual.Value.Projects);
 
             ScheduleSynchronization(http);
@@ -157,9 +157,10 @@ namespace CardBoard
             var projects = await individual.Projects.EnsureAsync();
             if (project == null || !projects.Contains(project))
             {
+                //project = await _community.AddFactAsync(
+                //    new Project(DateTime.Now, Utilities.GenerateRandomId()));
                 project = await _community.AddFactAsync(
-                    new Project(DateTime.Now, Utilities.GenerateRandomId()));
-                project.Name = "My Project";
+                    new Project(new DateTime(2013, 9, 24, 10, 13, 0), "Test Project")); project.Name = "My Project";
                 await _community.AddFactAsync(new Member(individual, project));
                 await _community.SetFactAsync(CurrentProject, project);
             }
