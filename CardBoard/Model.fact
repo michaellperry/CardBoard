@@ -84,9 +84,12 @@ query:
 }
 
 fact Card {
+purge where this.isDeleted;
+
 key:
     unique;
-    publish Project project;
+    publish Project project
+        where not this.isDeleted;
     time created;
 
 mutable:
@@ -100,34 +103,29 @@ query:
 
     bool isDeleted {
         exists CardDelete d : d.card = this
-            where not d.isRestored
-    }
-}
-
-fact CardColumn {
-key:
-    Card card;
-    Column column;
-    CardColumn* prior;
-
-query:
-    bool isCurrent {
-        not exists CardColumn next : next.prior = this
     }
 }
 
 fact CardDelete {
 key:
-    unique;
     Card card;
-
-query:
-    bool isRestored {
-        exists CardRestore r : r.cardDelete = this
-    }
 }
 
-fact CardRestore {
+fact CardColumn {
 key:
-    CardDelete cardDelete;
+    Card card;
+    publish Column column
+        where this.isCurrent and not this.isDeleted;
+    CardColumn* prior;
+
+query:
+    bool isCurrent {
+        not exists CardColumn next :
+           next.prior = this
+    }
+
+    bool isDeleted {
+        exists Card c : c = this.card
+            where c.isDeleted
+    }
 }

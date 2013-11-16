@@ -25,11 +25,10 @@ digraph "CardBoard"
     Card -> Project [color="red"]
     Card__text -> Card
     Card__text -> Card__text [label="  *"]
-    CardColumn -> Card
-    CardColumn -> Column
-    CardColumn -> CardColumn [label="  *"]
     CardDelete -> Card
-    CardRestore -> CardDelete
+    CardColumn -> Card
+    CardColumn -> Column [color="red"]
+    CardColumn -> CardColumn [label="  *"]
 }
 **/
 
@@ -1583,8 +1582,7 @@ namespace CardBoard
             if (_cacheQueryIsDeleted == null)
             {
 			    _cacheQueryIsDeleted = new Query()
-    				.JoinSuccessors(CardDelete.GetRoleCard(), Condition.WhereIsEmpty(CardDelete.GetQueryIsRestored())
-				)
+		    		.JoinSuccessors(CardDelete.GetRoleCard())
                 ;
             }
             return _cacheQueryIsDeleted;
@@ -1848,6 +1846,132 @@ namespace CardBoard
 
     }
     
+    public partial class CardDelete : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				CardDelete newFact = new CardDelete(memento);
+
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				CardDelete fact = (CardDelete)obj;
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return CardDelete.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return CardDelete.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"CardBoard.CardDelete", 300831704);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static CardDelete GetUnloadedInstance()
+        {
+            return new CardDelete((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static CardDelete GetNullInstance()
+        {
+            return new CardDelete((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<CardDelete> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (CardDelete)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleCard;
+        public static Role GetRoleCard()
+        {
+            if (_cacheRoleCard == null)
+            {
+                _cacheRoleCard = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "card",
+			        Card._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleCard;
+        }
+
+        // Queries
+
+        // Predicates
+
+        // Predecessors
+        private PredecessorObj<Card> _card;
+
+        // Fields
+
+        // Results
+
+        // Business constructor
+        public CardDelete(
+            Card card
+            )
+        {
+            InitializeResults();
+            _card = new PredecessorObj<Card>(this, GetRoleCard(), card);
+        }
+
+        // Hydration constructor
+        private CardDelete(FactMemento memento)
+        {
+            InitializeResults();
+            _card = new PredecessorObj<Card>(this, GetRoleCard(), memento, Card.GetUnloadedInstance, Card.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Card Card
+        {
+            get { return IsNull ? Card.GetNullInstance() : _card.Fact; }
+        }
+
+        // Field access
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
     public partial class CardColumn : CorrespondenceFact
     {
 		// Factory
@@ -1886,7 +2010,7 @@ namespace CardBoard
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"CardBoard.CardColumn", 631381808);
+			"CardBoard.CardColumn", 631381956);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -1936,7 +2060,7 @@ namespace CardBoard
 			        _correspondenceFactType,
 			        "column",
 			        Column._correspondenceFactType,
-			        false));
+			        true));
             }
             return _cacheRoleColumn;
         }
@@ -1967,9 +2091,23 @@ namespace CardBoard
             }
             return _cacheQueryIsCurrent;
 		}
+        private static Query _cacheQueryIsDeleted;
+
+        public static Query GetQueryIsDeleted()
+		{
+            if (_cacheQueryIsDeleted == null)
+            {
+			    _cacheQueryIsDeleted = new Query()
+    				.JoinPredecessors(CardColumn.GetRoleCard(), Condition.WhereIsNotEmpty(Card.GetQueryIsDeleted())
+				)
+                ;
+            }
+            return _cacheQueryIsDeleted;
+		}
 
         // Predicates
         public static Condition IsCurrent = Condition.WhereIsEmpty(GetQueryIsCurrent());
+        public static Condition IsDeleted = Condition.WhereIsNotEmpty(GetQueryIsDeleted());
 
         // Predecessors
         private PredecessorObj<Card> _card;
@@ -2019,286 +2157,6 @@ namespace CardBoard
         public PredecessorList<CardColumn> Prior
         {
             get { return _prior; }
-        }
-
-        // Field access
-
-        // Query result access
-
-        // Mutable property access
-
-    }
-    
-    public partial class CardDelete : CorrespondenceFact
-    {
-		// Factory
-		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
-		{
-			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
-
-			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
-			{
-				_fieldSerializerByType = fieldSerializerByType;
-			}
-
-			public CorrespondenceFact CreateFact(FactMemento memento)
-			{
-				CardDelete newFact = new CardDelete(memento);
-
-				// Create a memory stream from the memento data.
-				using (MemoryStream data = new MemoryStream(memento.Data))
-				{
-					using (BinaryReader output = new BinaryReader(data))
-					{
-						newFact._unique = (Guid)_fieldSerializerByType[typeof(Guid)].ReadData(output);
-					}
-				}
-
-				return newFact;
-			}
-
-			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
-			{
-				CardDelete fact = (CardDelete)obj;
-				_fieldSerializerByType[typeof(Guid)].WriteData(output, fact._unique);
-			}
-
-            public CorrespondenceFact GetUnloadedInstance()
-            {
-                return CardDelete.GetUnloadedInstance();
-            }
-
-            public CorrespondenceFact GetNullInstance()
-            {
-                return CardDelete.GetNullInstance();
-            }
-		}
-
-		// Type
-		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"CardBoard.CardDelete", 300831706);
-
-		protected override CorrespondenceFactType GetCorrespondenceFactType()
-		{
-			return _correspondenceFactType;
-		}
-
-        // Null and unloaded instances
-        public static CardDelete GetUnloadedInstance()
-        {
-            return new CardDelete((FactMemento)null) { IsLoaded = false };
-        }
-
-        public static CardDelete GetNullInstance()
-        {
-            return new CardDelete((FactMemento)null) { IsNull = true };
-        }
-
-        // Ensure
-        public Task<CardDelete> EnsureAsync()
-        {
-            if (_loadedTask != null)
-                return _loadedTask.ContinueWith(t => (CardDelete)t.Result);
-            else
-                return Task.FromResult(this);
-        }
-
-        // Roles
-        private static Role _cacheRoleCard;
-        public static Role GetRoleCard()
-        {
-            if (_cacheRoleCard == null)
-            {
-                _cacheRoleCard = new Role(new RoleMemento(
-			        _correspondenceFactType,
-			        "card",
-			        Card._correspondenceFactType,
-			        false));
-            }
-            return _cacheRoleCard;
-        }
-
-        // Queries
-        private static Query _cacheQueryIsRestored;
-
-        public static Query GetQueryIsRestored()
-		{
-            if (_cacheQueryIsRestored == null)
-            {
-			    _cacheQueryIsRestored = new Query()
-		    		.JoinSuccessors(CardRestore.GetRoleCardDelete())
-                ;
-            }
-            return _cacheQueryIsRestored;
-		}
-
-        // Predicates
-        public static Condition IsRestored = Condition.WhereIsNotEmpty(GetQueryIsRestored());
-
-        // Predecessors
-        private PredecessorObj<Card> _card;
-
-        // Unique
-        private Guid _unique;
-
-        // Fields
-
-        // Results
-
-        // Business constructor
-        public CardDelete(
-            Card card
-            )
-        {
-            _unique = Guid.NewGuid();
-            InitializeResults();
-            _card = new PredecessorObj<Card>(this, GetRoleCard(), card);
-        }
-
-        // Hydration constructor
-        private CardDelete(FactMemento memento)
-        {
-            InitializeResults();
-            _card = new PredecessorObj<Card>(this, GetRoleCard(), memento, Card.GetUnloadedInstance, Card.GetNullInstance);
-        }
-
-        // Result initializer
-        private void InitializeResults()
-        {
-        }
-
-        // Predecessor access
-        public Card Card
-        {
-            get { return IsNull ? Card.GetNullInstance() : _card.Fact; }
-        }
-
-        // Field access
-		public Guid Unique { get { return _unique; } }
-
-
-        // Query result access
-
-        // Mutable property access
-
-    }
-    
-    public partial class CardRestore : CorrespondenceFact
-    {
-		// Factory
-		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
-		{
-			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
-
-			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
-			{
-				_fieldSerializerByType = fieldSerializerByType;
-			}
-
-			public CorrespondenceFact CreateFact(FactMemento memento)
-			{
-				CardRestore newFact = new CardRestore(memento);
-
-
-				return newFact;
-			}
-
-			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
-			{
-				CardRestore fact = (CardRestore)obj;
-			}
-
-            public CorrespondenceFact GetUnloadedInstance()
-            {
-                return CardRestore.GetUnloadedInstance();
-            }
-
-            public CorrespondenceFact GetNullInstance()
-            {
-                return CardRestore.GetNullInstance();
-            }
-		}
-
-		// Type
-		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"CardBoard.CardRestore", 2025420312);
-
-		protected override CorrespondenceFactType GetCorrespondenceFactType()
-		{
-			return _correspondenceFactType;
-		}
-
-        // Null and unloaded instances
-        public static CardRestore GetUnloadedInstance()
-        {
-            return new CardRestore((FactMemento)null) { IsLoaded = false };
-        }
-
-        public static CardRestore GetNullInstance()
-        {
-            return new CardRestore((FactMemento)null) { IsNull = true };
-        }
-
-        // Ensure
-        public Task<CardRestore> EnsureAsync()
-        {
-            if (_loadedTask != null)
-                return _loadedTask.ContinueWith(t => (CardRestore)t.Result);
-            else
-                return Task.FromResult(this);
-        }
-
-        // Roles
-        private static Role _cacheRoleCardDelete;
-        public static Role GetRoleCardDelete()
-        {
-            if (_cacheRoleCardDelete == null)
-            {
-                _cacheRoleCardDelete = new Role(new RoleMemento(
-			        _correspondenceFactType,
-			        "cardDelete",
-			        CardDelete._correspondenceFactType,
-			        false));
-            }
-            return _cacheRoleCardDelete;
-        }
-
-        // Queries
-
-        // Predicates
-
-        // Predecessors
-        private PredecessorObj<CardDelete> _cardDelete;
-
-        // Fields
-
-        // Results
-
-        // Business constructor
-        public CardRestore(
-            CardDelete cardDelete
-            )
-        {
-            InitializeResults();
-            _cardDelete = new PredecessorObj<CardDelete>(this, GetRoleCardDelete(), cardDelete);
-        }
-
-        // Hydration constructor
-        private CardRestore(FactMemento memento)
-        {
-            InitializeResults();
-            _cardDelete = new PredecessorObj<CardDelete>(this, GetRoleCardDelete(), memento, CardDelete.GetUnloadedInstance, CardDelete.GetNullInstance);
-        }
-
-        // Result initializer
-        private void InitializeResults()
-        {
-        }
-
-        // Predecessor access
-        public CardDelete CardDelete
-        {
-            get { return IsNull ? CardDelete.GetNullInstance() : _cardDelete.Fact; }
         }
 
         // Field access
@@ -2395,6 +2253,10 @@ namespace CardBoard
 			community.AddQuery(
 				Card._correspondenceFactType,
 				Card.GetQueryIsDeleted().QueryDefinition);
+			community.AddUnpublisher(
+				Card.GetRoleProject(),
+				Condition.WhereIsEmpty(Card.GetQueryIsDeleted())
+				);
 			community.AddType(
 				Card__text._correspondenceFactType,
 				new Card__text.CorrespondenceFactFactory(fieldSerializerByType),
@@ -2403,23 +2265,24 @@ namespace CardBoard
 				Card__text._correspondenceFactType,
 				Card__text.GetQueryIsCurrent().QueryDefinition);
 			community.AddType(
+				CardDelete._correspondenceFactType,
+				new CardDelete.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { CardDelete._correspondenceFactType }));
+			community.AddType(
 				CardColumn._correspondenceFactType,
 				new CardColumn.CorrespondenceFactFactory(fieldSerializerByType),
 				new FactMetadata(new List<CorrespondenceFactType> { CardColumn._correspondenceFactType }));
 			community.AddQuery(
 				CardColumn._correspondenceFactType,
 				CardColumn.GetQueryIsCurrent().QueryDefinition);
-			community.AddType(
-				CardDelete._correspondenceFactType,
-				new CardDelete.CorrespondenceFactFactory(fieldSerializerByType),
-				new FactMetadata(new List<CorrespondenceFactType> { CardDelete._correspondenceFactType }));
 			community.AddQuery(
-				CardDelete._correspondenceFactType,
-				CardDelete.GetQueryIsRestored().QueryDefinition);
-			community.AddType(
-				CardRestore._correspondenceFactType,
-				new CardRestore.CorrespondenceFactFactory(fieldSerializerByType),
-				new FactMetadata(new List<CorrespondenceFactType> { CardRestore._correspondenceFactType }));
+				CardColumn._correspondenceFactType,
+				CardColumn.GetQueryIsDeleted().QueryDefinition);
+			community.AddUnpublisher(
+				CardColumn.GetRoleColumn(),
+				Condition.WhereIsEmpty(CardColumn.GetQueryIsCurrent())
+					.And().IsEmpty(CardColumn.GetQueryIsDeleted())
+				);
 		}
 	}
 }

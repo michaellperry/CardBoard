@@ -114,11 +114,12 @@ namespace CardBoard.Board.ViewModels
             get
             {
                 return MakeCommand
-                    .When(() => SelectedCard != null)
-                    .Do(delegate
+                    .When(() => _cardSelectionModel.SelectedCard != null)
+                    .Do(() =>
                     {
+                        var card = _cardSelectionModel.SelectedCard;
                         _synchronizationService.Community.AddFactAsync(
-                            new CardDelete(SelectedCard));
+                            new CardDelete(card));
                     });
             }
         }
