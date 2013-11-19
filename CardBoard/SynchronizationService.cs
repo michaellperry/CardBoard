@@ -160,7 +160,8 @@ namespace CardBoard
                 //project = await _community.AddFactAsync(
                 //    new Project(DateTime.Now, Utilities.GenerateRandomId()));
                 project = await _community.AddFactAsync(
-                    new Project(new DateTime(2013, 9, 24, 10, 13, 0), "MVP Summit")); project.Name = "My Project";
+                    new Project(new DateTime(2013, 9, 24, 10, 13, 0, DateTimeKind.Utc), "MVP Summit 2"));
+                project.Name = "My Project";
                 await _community.AddFactAsync(new Member(individual, project));
                 await _community.SetFactAsync(CurrentProject, project);
             }
