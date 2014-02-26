@@ -390,15 +390,14 @@ namespace CardBoard
             get { return _name.AsTransientDisputable(fact => fact.Value); }
 			set
 			{
-                Action setter = async delegate()
+                Community.Perform(async delegate()
                 {
                     var current = (await _name.EnsureAsync()).ToList();
                     if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
                     {
                         await Community.AddFactAsync(new Project__name(this, _name, value.Value));
                     }
-                };
-                setter();
+                });
 			}
         }
 
@@ -1075,15 +1074,14 @@ namespace CardBoard
             get { return _name.AsTransientDisputable(fact => fact.Value); }
 			set
 			{
-                Action setter = async delegate()
+                Community.Perform(async delegate()
                 {
                     var current = (await _name.EnsureAsync()).ToList();
                     if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
                     {
                         await Community.AddFactAsync(new Column__name(this, _name, value.Value));
                     }
-                };
-                setter();
+                });
 			}
         }
         public TransientDisputable<Column__ordinal, int> Ordinal
@@ -1091,15 +1089,14 @@ namespace CardBoard
             get { return _ordinal.AsTransientDisputable(fact => fact.Value); }
 			set
 			{
-                Action setter = async delegate()
+                Community.Perform(async delegate()
                 {
                     var current = (await _ordinal.EnsureAsync()).ToList();
                     if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
                     {
                         await Community.AddFactAsync(new Column__ordinal(this, _ordinal, value.Value));
                     }
-                };
-                setter();
+                });
 			}
         }
 
@@ -1656,15 +1653,14 @@ namespace CardBoard
             get { return _text.AsTransientDisputable(fact => fact.Value); }
 			set
 			{
-                Action setter = async delegate()
+                Community.Perform(async delegate()
                 {
                     var current = (await _text.EnsureAsync()).ToList();
                     if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
                     {
                         await Community.AddFactAsync(new Card__text(this, _text, value.Value));
                     }
-                };
-                setter();
+                });
 			}
         }
 
@@ -2253,10 +2249,6 @@ namespace CardBoard
 			community.AddQuery(
 				Card._correspondenceFactType,
 				Card.GetQueryIsDeleted().QueryDefinition);
-			community.AddUnpublisher(
-				Card.GetRoleProject(),
-				Condition.WhereIsEmpty(Card.GetQueryIsDeleted())
-				);
 			community.AddType(
 				Card__text._correspondenceFactType,
 				new Card__text.CorrespondenceFactFactory(fieldSerializerByType),
@@ -2278,11 +2270,6 @@ namespace CardBoard
 			community.AddQuery(
 				CardColumn._correspondenceFactType,
 				CardColumn.GetQueryIsDeleted().QueryDefinition);
-			community.AddUnpublisher(
-				CardColumn.GetRoleColumn(),
-				Condition.WhereIsEmpty(CardColumn.GetQueryIsCurrent())
-					.And().IsEmpty(CardColumn.GetQueryIsDeleted())
-				);
 		}
 	}
 }

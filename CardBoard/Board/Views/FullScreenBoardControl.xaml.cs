@@ -70,10 +70,9 @@ namespace CardBoard.Board.Views
                 return;
 
             var removed = observableCollection
-                .OfType<IObjectInstance>()
                 .Where(wrapper =>
                 {
-                    CardViewModel viewModel = wrapper.WrappedObject as CardViewModel;
+                    CardViewModel viewModel = ForView.Unwrap<CardViewModel>(wrapper);
                     if (viewModel == null)
                         return false;
                     return viewModel.Card == _draggingCard;

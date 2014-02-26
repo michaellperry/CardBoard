@@ -17,8 +17,10 @@ namespace CardBoard
         private const string CurrentProject = "CardBoard.Project.current";
 
         private Community _community;
-        private Independent<Individual> _individual = new Independent<Individual>();
-        private Independent<Project> _project = new Independent<Project>();
+        private Independent<Individual> _individual = new Independent<Individual>(
+            Individual.GetNullInstance());
+        private Independent<Project> _project = new Independent<Project>(
+            Project.GetNullInstance());
 
         public void Initialize()
         {
@@ -29,9 +31,8 @@ namespace CardBoard
             _community = new Community(storage);
             _community.AddAsynchronousCommunicationStrategy(communication);
             _community.Register<CorrespondenceModel>();
-            _community.Subscribe(() => _individual.Value);
-            _community.Subscribe(() => _individual.Value == null ? Enumerable.Empty<Project>() :
-                _individual.Value.Projects);
+            _community.Subscribe(() => Individual);
+            _community.Subscribe(() => Individual.Projects);
 
             ScheduleSynchronization(http);
 
@@ -105,7 +106,7 @@ namespace CardBoard
             };
 
             // And synchronize on startup or resume.
-            Synchronize();
+            _community.BeginReceiving();
         }
 
         private async void LoadInitialFacts(HTTPConfigurationProvider http)
@@ -160,7 +161,7 @@ namespace CardBoard
                 //project = await _community.AddFactAsync(
                 //    new Project(DateTime.Now, Utilities.GenerateRandomId()));
                 project = await _community.AddFactAsync(
-                    new Project(new DateTime(2013, 9, 24, 10, 13, 0, DateTimeKind.Utc), "MVP Summit 2"));
+                    new Project(new DateTime(2014, 2, 25, 20, 49, 0, DateTimeKind.Utc), "Pluralsight Author's Retreat"));
                 project.Name = "My Project";
                 await _community.AddFactAsync(new Member(individual, project));
                 await _community.SetFactAsync(CurrentProject, project);

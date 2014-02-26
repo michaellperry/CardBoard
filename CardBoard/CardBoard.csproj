@@ -226,35 +226,36 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="UpdateControls, Version=2.2.2.1, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
-      <HintPath>..\packages\UpdateControls.2.2.5.1\lib\windows8\UpdateControls.dll</HintPath>
-    </Reference>
-    <Reference Include="UpdateControls.Correspondence, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UpdateControls, Version=2.3.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Correspondence.2.1.0.1\lib\windows8\UpdateControls.Correspondence.dll</HintPath>
+      <HintPath>..\packages\updatecontrols.2.3.0.4\lib\win81\UpdateControls.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UpdateControls.Correspondence, Version=2.2.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.BinaryHTTPClient.dll</HintPath>
+      <HintPath>..\packages\Correspondence.2.2.0.9\lib\win81\UpdateControls.Correspondence.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient.Notification, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient, Version=2.2.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.BinaryHTTPClient.Notification.dll</HintPath>
+      <HintPath>..\packages\Correspondence.App.Core.2.2.0.8\lib\win81\UpdateControls.Correspondence.BinaryHTTPClient.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.Data, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UpdateControls.Correspondence.BinaryHTTPClient.Notifications">
+      <HintPath>..\packages\Correspondence.App.Core.2.2.0.8\lib\win81\UpdateControls.Correspondence.BinaryHTTPClient.Notifications.dll</HintPath>
+    </Reference>
+    <Reference Include="UpdateControls.Correspondence.Data, Version=2.2.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.Data.dll</HintPath>
+      <HintPath>..\packages\Correspondence.App.Core.2.2.0.8\lib\win81\UpdateControls.Correspondence.Data.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.FileStream, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UpdateControls.Correspondence.FileStream, Version=2.2.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.FileStream.dll</HintPath>
+      <HintPath>..\packages\Correspondence.App.Core.2.2.0.8\lib\win81\UpdateControls.Correspondence.FileStream.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.Correspondence.Memory, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UpdateControls.Correspondence.Memory, Version=2.2.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Correspondence.App.2.1.0.1\lib\windows8\UpdateControls.Correspondence.Memory.dll</HintPath>
+      <HintPath>..\packages\Correspondence.App.Core.2.2.0.8\lib\win81\UpdateControls.Correspondence.Memory.dll</HintPath>
     </Reference>
-    <Reference Include="UpdateControls.XAML, Version=2.2.2.1, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
-      <HintPath>..\packages\UpdateControls.2.2.5.1\lib\windows8\UpdateControls.XAML.dll</HintPath>
+    <Reference Include="UpdateControls.XAML, Version=2.3.0.0, Culture=neutral, PublicKeyToken=19e83a8289e31a8f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\updatecontrols.2.3.0.4\lib\win81\UpdateControls.XAML.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

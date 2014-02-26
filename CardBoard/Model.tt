@@ -1,7 +1,7 @@
 ﻿<#@ template language="C#" hostspecific="True" debug="True" #>
 <#@ assembly name="System.Core"#>
-<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.1.0.0\tools\UpdateControls.Correspondence.Factual.dll"#>
-<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.1.0.0\tools\QEDCode.LLOne.dll"#>
+<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.2.0.5\tools\UpdateControls.Correspondence.Factual.dll"#>
+<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.2.0.5\tools\QEDCode.LLOne.dll"#>
 <#@ import namespace="System.IO"#>
 <#@ import namespace="System.Collections.Generic"#>
 <#@ import namespace="System.Linq"#>
@@ -308,15 +308,14 @@ namespace <#=targetNamespace.Name#>
             get { return _<#=result.Query.Name#>.AsTransientDisputable(fact => fact.Value); }
 			set
 			{
-                Action setter = async delegate()
+                Community.Perform(async delegate()
                 {
                     var current = (await _<#=result.Query.Name#>.EnsureAsync()).ToList();
                     if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
                     {
                         await Community.AddFactAsync(new <#=result.Type#>(this, _<#=result.Query.Name#>, value.Value));
                     }
-                };
-                setter();
+                });
 			}
         }
 <#}#>
@@ -327,15 +326,14 @@ namespace <#=targetNamespace.Name#>
             get { return _<#=result.Query.Name#>.AsTransientDisputable(fact => (<#=ResultTypeFact(result)#>)fact.Value); }
 			set
 			{
-				Action setter = async delegate()
+				Community.Perform(async delegate()
 				{
 					var current = (await _<#=result.Query.Name#>.EnsureAsync()).ToList();
 					if (current.Count != 1 || !object.Equals(current[0].Value, value.Value))
 					{
 						await Community.AddFactAsync(new <#=result.Type#>(this, _<#=result.Query.Name#>, value.Value));
 					}
-				};
-				setter();
+				});
 			}
         }
 <#}#>
@@ -479,6 +477,8 @@ private static string NativeTypeName(NativeType nativeType)
         return "DateTime";
     if (nativeType == NativeType.Byte)
         return "byte";
+	if (nativeType == NativeType.Binary)
+		return "byte[]";
     return "UnknownType";
 }
 
