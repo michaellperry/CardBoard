@@ -1,7 +1,7 @@
 ﻿<#@ template language="C#" hostspecific="True" debug="True" #>
 <#@ assembly name="System.Core"#>
-<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.2.0.5\tools\UpdateControls.Correspondence.Factual.dll"#>
-<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.2.0.5\tools\QEDCode.LLOne.dll"#>
+<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.2.0.10\tools\UpdateControls.Correspondence.Factual.dll"#>
+<#@ assembly name="$(SolutionDir)packages\Correspondence.Model.2.2.0.10\tools\QEDCode.LLOne.dll"#>
 <#@ import namespace="System.IO"#>
 <#@ import namespace="System.Collections.Generic"#>
 <#@ import namespace="System.Linq"#>
@@ -243,7 +243,9 @@ namespace <#=targetNamespace.Name#>
 <# } #>
             InitializeResults();
 <# foreach (Predecessor predecessor in c.Predecessors) { #>
-            _<#=predecessor.Name#> = new <#=PredecessorClass(predecessor)#>(this, Get<#=RoleName(predecessor.Name)#>(), <#=predecessor.Name#>);
+            _<#=predecessor.Name#> = new <#=PredecessorClass(predecessor)#>(this, Get<#=RoleName(predecessor.Name)#>(), <#=predecessor.Name#><# if (predecessor.Cardinality == Cardinality.Optional) { #>
+
+                ?? <#=predecessor.FactType#>.GetNullInstance()<#}#>);
 <#}#>
 <# foreach (Field field in c.Fields) {#>
             _<#=field.Name#> = <#=field.Name#><#=(field.Cardinality == Cardinality.Many) ? ".ToList()" : ""#>;

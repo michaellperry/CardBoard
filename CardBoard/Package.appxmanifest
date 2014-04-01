@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="28ac369f-7658-4b65-9d8c-5c35c3593447" Publisher="CN=Michael" Version="1.1.0.9" />
+  <Identity Name="28ac369f-7658-4b65-9d8c-5c35c3593447" Publisher="CN=Michael" Version="1.1.0.17" />
   <Properties>
     <DisplayName>CardBoard</DisplayName>
     <PublisherDisplayName>Michael</PublisherDisplayName>
