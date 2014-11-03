@@ -16,6 +16,8 @@ namespace CardBoard.ViewModels
             _synchronizationService = new SynchronizationService();
             if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
                 _synchronizationService.Initialize();
+            else
+                _synchronizationService.InitializeDesignMode();
         }
 
         public object Board

@@ -1,18 +1,14 @@
 using CardBoard.Common;
 using CardBoard.Model;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.BinaryHTTPClient;
 using UpdateControls.Correspondence.FileStream;
 using UpdateControls.Correspondence.Memory;
 using UpdateControls.Fields;
-using Windows.Storage;
 using Windows.UI.Xaml;
 
 namespace CardBoard
@@ -41,6 +37,17 @@ namespace CardBoard
             _community.Subscribe(() => Individual.Projects);
 
             ScheduleSynchronization(http);
+
+            LoadInitialFacts(http);
+        }
+
+        public void InitializeDesignMode()
+        {
+            var storage = new MemoryStorageStrategy();
+            var http = new HTTPConfigurationProvider();
+
+            _community = new Community(storage);
+            _community.Register<CorrespondenceModel>();
 
             LoadInitialFacts(http);
         }
@@ -104,15 +111,16 @@ namespace CardBoard
                 Synchronize();
             };
 
+            // Synchronize on startup and resume.
+            if (NetworkInterface.GetIsNetworkAvailable())
+                Synchronize();
+
             // Synchronize when the network becomes available.
             System.Net.NetworkInformation.NetworkChange.NetworkAddressChanged += (sender, e) =>
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
                     Synchronize();
             };
-
-            // And synchronize on startup or resume.
-            _community.BeginReceiving();
         }
 
         private async void LoadInitialFacts(HTTPConfigurationProvider http)

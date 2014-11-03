@@ -9,6 +9,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <Pivot>
+            <PivotItem Header="To Do"/>
+            <PivotItem Header="Doing"/>
+            <PivotItem Header="Done"/>
+        </Pivot>
     </Grid>
 </Page>

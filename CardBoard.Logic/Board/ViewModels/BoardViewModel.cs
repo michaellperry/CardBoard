@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CardBoard.Board.Models;
+using CardBoard.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using CardBoard.Board.Models;
 using UpdateControls.XAML;
-using CardBoard.Model;
 
 namespace CardBoard.Board.ViewModels
 {
