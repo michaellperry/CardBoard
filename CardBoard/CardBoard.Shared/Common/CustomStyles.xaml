@@ -270,4 +270,5 @@
             Value="&#xE10A;" />
     </Style>
     <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFEDED60"/>
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#FF113C4B"/>
 </ResourceDictionary>

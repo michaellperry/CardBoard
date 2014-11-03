@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#FF113C4B"
     DataContext="{Binding Board, Source={StaticResource Locator}}">
 
     <Page.Resources>
@@ -14,6 +13,9 @@
             <views:CardControl />
         </DataTemplate>
     </Page.Resources>
+	<Page.Background>
+		<StaticResource ResourceKey="AppBackgroundBrush"/>
+	</Page.Background>
 
     <Grid>
         <Pivot>
