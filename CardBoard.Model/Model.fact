@@ -1,0 +1,128 @@
+namespace CardBoard.Model;
+
+fact Individual {
+key:
+    time created;
+    string identifier;
+
+query:
+    Member* memberships {
+        Member m : m.individual = this
+            where not m.isDeleted
+    }
+
+    Project* projects {
+        Member m : m.individual = this
+            where not m.isDeleted
+        Project p : p = m.project
+    }
+}
+
+
+//////////////////////
+// Projects
+
+fact Project {
+key:
+    time created;
+    string identifier;
+
+mutable:
+    publish string name;
+
+query:
+    Column* columns {
+        Column c : c.project = this
+    }
+
+    Card* cards {
+        Column c : c.project = this
+        CardColumn cc : cc.column = c
+            where cc.isCurrent
+        Card card : cc.card = card
+            where not card.isDeleted
+    }
+}
+
+fact Member {
+key:
+    unique;
+    publish Individual individual;
+    Project project;
+
+query:
+    bool isDeleted {
+        exists MemberDelete d : d.member = this
+    }
+}
+
+fact MemberDelete {
+key:
+    Member member;
+}
+
+
+//////////////////////
+// Cards
+
+fact Column {
+key:
+    unique;
+    publish Project project;
+
+mutable:
+    string name;
+    int ordinal;
+
+query:
+    Card* cards {
+        CardColumn cc : cc.column = this
+            where cc.isCurrent
+        Card c : cc.card = c
+            where not c.isDeleted
+    }
+}
+
+fact Card {
+
+key:
+    unique;
+    publish Project project;
+    time created;
+
+mutable:
+    string text;
+
+query:
+    CardColumn* cardColumns {
+        CardColumn cc : cc.card = this
+            where cc.isCurrent
+    }
+
+    bool isDeleted {
+        exists CardDelete d : d.card = this
+    }
+}
+
+fact CardDelete {
+key:
+    Card card;
+}
+
+fact CardColumn {
+key:
+    Card card;
+    publish Column column;
+    CardColumn* prior;
+
+query:
+    bool isCurrent {
+        not exists CardColumn next :
+           next.prior = this
+    }
+
+    bool isDeleted {
+        exists Card c : c = this.card
+            where c.isDeleted
+    }
+}
