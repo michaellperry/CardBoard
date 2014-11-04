@@ -34,8 +34,8 @@ namespace CardBoard.Board.ViewModels
             _cardDetail = cardDetail;
 
             _selectedCard = new Dependent<Card>(() => _cardSelectionModel.SelectedCard);
-            _selectedCard.Invalidated += () => UpdateScheduler.ScheduleUpdate(this);
-            UpdateNow();
+            _selectedCard.Invalidated += ScheduleUpdateSelectedCard;
+            ScheduleUpdateSelectedCard();
         }
 
         public string LastError
@@ -231,6 +231,11 @@ namespace CardBoard.Board.ViewModels
         public void ClearSelection()
         {
             _cardSelectionModel.SelectedCard = null;
+        }
+
+        private void ScheduleUpdateSelectedCard()
+        {
+            UpdateScheduler.ScheduleUpdate(this);
         }
 
         public void UpdateNow()
