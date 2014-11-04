@@ -36,7 +36,7 @@ namespace CardBoard.Board.ViewModels
                 var card = _card;
                 if (card == null)
                 {
-                    card = await _project.Community.AddFactAsync(new Card(_project, DateTime.Now));
+                    card = await _project.Community.AddFactAsync(new Card(_project, DateTime.Now.ToUniversalTime()));
                 }
                 _cardDetail.ToCard(card);
 

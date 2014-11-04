@@ -52,5 +52,10 @@ namespace CardBoard
         {
             Frame.GoBack();
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            CardText.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+        }
     }
 }
