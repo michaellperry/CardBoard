@@ -30,7 +30,7 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <TextBox Margin="0" TextWrapping="Wrap" Text="{Binding Text}" VerticalAlignment="Top" Height="120" Background="{StaticResource CardBackgroundBrush}" BorderBrush="{x:Null}"/>
+            <TextBox Margin="0" TextWrapping="Wrap" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Height="120" Background="{StaticResource CardBackgroundBrush}" BorderBrush="{x:Null}"/>
 
         </Grid>
     </Grid>
