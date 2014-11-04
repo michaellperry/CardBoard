@@ -17,7 +17,7 @@
 		<StaticResource ResourceKey="AppBackgroundBrush"/>
 	</Page.Background>
 
-    <Grid>
+    <Grid DataContext="{Binding ProjectDetail}">
         <Pivot>
             <PivotItem Header="To Do">
                 <ListView
@@ -47,7 +47,7 @@
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label="New Card" Command="{Binding NewCard}" Icon="Add" />
+            <AppBarButton Label="New Card" Icon="Add" Click="NewCard_Click" />
             <AppBarButton Label="Refresh" Command="{Binding Refresh}" Icon="Refresh" />
         </CommandBar>
     </Page.BottomAppBar>

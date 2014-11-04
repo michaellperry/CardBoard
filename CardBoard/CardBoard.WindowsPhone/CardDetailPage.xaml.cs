@@ -1,8 +1,10 @@
-﻿using System;
+﻿using CardBoard.Board.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using UpdateControls.XAML;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -34,6 +36,21 @@ namespace CardBoard
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+        }
+
+        private void Ok_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = ForView.Unwrap<CardDetailViewModel>(DataContext);
+            if (viewModel != null)
+            {
+                viewModel.Ok();
+                Frame.GoBack();
+            }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.GoBack();
         }
     }
 }

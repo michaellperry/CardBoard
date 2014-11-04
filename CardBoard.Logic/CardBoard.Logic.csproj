@@ -44,6 +44,7 @@
     <Compile Include="Board\Models\CardEditedEventArgs.cs" />
     <Compile Include="Board\Models\CardSelectionModel.cs" />
     <Compile Include="Board\ViewModels\BoardViewModel.cs" />
+    <Compile Include="Board\ViewModels\CardDetailViewModel.cs" />
     <Compile Include="Board\ViewModels\CardViewModel.cs" />
     <Compile Include="Board\ViewModels\ProjectDetailViewModel.cs" />
     <Compile Include="Board\ViewModels\ProjectHeaderViewModel.cs" />

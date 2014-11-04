@@ -12,16 +12,19 @@ namespace CardBoard.Board.ViewModels
     {
         private readonly ISynchronizationService _synchronizationService;
         private readonly CardSelectionModel _cardSelectionModel;
-
+        private readonly CardDetailModel _cardDetail;
+        
         public delegate void CardEditedHandler(object sender, CardEditedEventArgs args);
         public event CardEditedHandler CardEdited;
         
         public BoardViewModel(
             ISynchronizationService synchronizationService,
-            CardSelectionModel cardSelectionModel)
+            CardSelectionModel cardSelectionModel,
+            CardDetailModel cardDetail)
         {
             _synchronizationService = synchronizationService;
             _cardSelectionModel = cardSelectionModel;
+            _cardDetail = cardDetail;
         }
 
         public string LastError
@@ -136,11 +139,12 @@ namespace CardBoard.Board.ViewModels
                         var selectedCard = SelectedCard;
                         if (CardEdited != null)
                         {
+                            _cardDetail.Text = selectedCard.Text;
                             CardEdited(this, new CardEditedEventArgs
                             {
-                                CardDetail = CardDetailModel.FromCard(selectedCard),
-                                Completed = cardDetail =>
-                                    cardDetail.ToCard(selectedCard)
+                                CardDetail = _cardDetail,
+                                Completed = c =>
+                                    c.ToCard(selectedCard)
                             });
                         }
                     });
@@ -158,11 +162,12 @@ namespace CardBoard.Board.ViewModels
                         var project = _synchronizationService.Project;
                         if (CardEdited != null)
                         {
+                            _cardDetail.Text = String.Empty;
                             CardEdited(this, new CardEditedEventArgs
                             {
-                                CardDetail = new CardDetailModel(),
-                                Completed = cardDetail =>
-                                    AddCardCompleted(project, cardDetail)
+                                CardDetail = _cardDetail,
+                                Completed = c =>
+                                    AddCardCompleted(project, c)
                             });
                         }
                     });
@@ -200,6 +205,11 @@ namespace CardBoard.Board.ViewModels
             {
                 // TODO: Report error.
             }
+        }
+
+        public void PrepareNewCard()
+        {
+            _cardDetail.Text = String.Empty;
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿using System;
+﻿using CardBoard.Board.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using UpdateControls.XAML;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -43,6 +45,16 @@ namespace CardBoard
             // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
             // If you are using the NavigationHelper provided by some templates,
             // this event is handled for you.
+        }
+
+        private void NewCard_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = ForView.Unwrap<BoardViewModel>(DataContext);
+            if (viewModel != null)
+            {
+                viewModel.PrepareNewCard();
+                Frame.Navigate(typeof(CardDetailPage));
+            }
         }
     }
 }
