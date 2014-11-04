@@ -4,11 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using UpdateControls;
+using UpdateControls.Fields;
 using UpdateControls.XAML;
 
 namespace CardBoard.Board.ViewModels
 {
-    public class BoardViewModel
+    public class BoardViewModel : IUpdatable
     {
         private readonly ISynchronizationService _synchronizationService;
         private readonly CardSelectionModel _cardSelectionModel;
@@ -16,6 +18,11 @@ namespace CardBoard.Board.ViewModels
         
         public delegate void CardEditedHandler(object sender, CardEditedEventArgs args);
         public event CardEditedHandler CardEdited;
+
+        public delegate void CardSelectedHandler(Card card);
+        public event CardSelectedHandler CardSelected;
+
+        private Dependent<Card> _selectedCard;
         
         public BoardViewModel(
             ISynchronizationService synchronizationService,
@@ -25,6 +32,10 @@ namespace CardBoard.Board.ViewModels
             _synchronizationService = synchronizationService;
             _cardSelectionModel = cardSelectionModel;
             _cardDetail = cardDetail;
+
+            _selectedCard = new Dependent<Card>(() => _cardSelectionModel.SelectedCard);
+            _selectedCard.Invalidated += () => UpdateScheduler.ScheduleUpdate(this);
+            UpdateNow();
         }
 
         public string LastError
@@ -210,6 +221,23 @@ namespace CardBoard.Board.ViewModels
         public void PrepareNewCard()
         {
             _cardDetail.Text = String.Empty;
+        }
+
+        public void PrepareEditCard(Card card)
+        {
+            _cardDetail.Text = card.Text;
+        }
+
+        public void ClearSelection()
+        {
+            _cardSelectionModel.SelectedCard = null;
+        }
+
+        public void UpdateNow()
+        {
+            var selectedCard = _selectedCard.Value;
+            if (CardSelected != null)
+                CardSelected(selectedCard);
         }
     }
 }
