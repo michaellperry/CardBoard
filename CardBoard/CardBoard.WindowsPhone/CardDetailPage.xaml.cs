@@ -69,5 +69,10 @@ namespace CardBoard
                 Frame.GoBack();
             }
         }
+
+        private void Move_Click(object sender, RoutedEventArgs e)
+        {
+            ColumnSelector.IsDropDownOpen = true;
+        }
     }
 }
