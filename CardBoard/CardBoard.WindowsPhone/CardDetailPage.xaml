@@ -35,7 +35,7 @@
             <TextBox x:Name="CardText" Margin="0" TextWrapping="Wrap" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Height="120" Background="{StaticResource CardBackgroundBrush}" BorderBrush="{x:Null}"/>
 
         </Grid>
-        <ComboBox Grid.Row="2" Margin="20, 10" ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}">
+        <ComboBox Grid.Row="2" Margin="20, 10" ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn, Mode=TwoWay}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>

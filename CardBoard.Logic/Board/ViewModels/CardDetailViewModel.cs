@@ -45,8 +45,8 @@ namespace CardBoard.Board.ViewModels
             }
             set
             {
-                _cardDetail.SelectedColumn = value == null ? null
-                    : value.Column;
+                if (value != null)
+                    _cardDetail.SelectedColumn = value.Column;
             }
         }
 
