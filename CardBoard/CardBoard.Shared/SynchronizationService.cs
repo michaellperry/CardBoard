@@ -123,29 +123,21 @@ namespace CardBoard
             };
         }
 
-        private async void LoadInitialFacts(HTTPConfigurationProvider http)
+        private void LoadInitialFacts(HTTPConfigurationProvider http)
         {
-            try
+            _community.Perform(async delegate
             {
                 var individual = await InitializeIndividual(http);
                 var project = await InitializeProject(individual);
-            }
-            catch (Exception x)
-            {
-                // TODO: Report the exception.
-            }
+            });
         }
 
-        private async void SetCurrentProject(Project project)
+        private void SetCurrentProject(Project project)
         {
-            try
+            _community.Perform(async delegate
             {
                 await _community.SetFactAsync(CurrentProject, project);
-            }
-            catch (Exception x)
-            {
-                // TODO: Report the exception.
-            }
+            });
         }
 
         private async Task<Individual> InitializeIndividual(HTTPConfigurationProvider http)
@@ -172,13 +164,14 @@ namespace CardBoard
             var projects = await individual.Projects.EnsureAsync();
             if (project == null || !projects.Contains(project))
             {
-                //project = await _community.AddFactAsync(
-                //    new Project(DateTime.Now, Utilities.GenerateRandomId()));
                 project = await _community.AddFactAsync(
-                    new Project(new DateTime(2014, 2, 25, 20, 49, 0, DateTimeKind.Utc), "Pluralsight Author's Retreat"));
+                    new Project(DateTime.Now));
                 project.Name = "My Project";
                 await _community.AddFactAsync(new Member(individual, project));
                 await _community.SetFactAsync(CurrentProject, project);
+                (await project.MakeColumnAsync("To Do")).Ordinal = 1;
+                (await project.MakeColumnAsync("Doing")).Ordinal = 2;
+                (await project.MakeColumnAsync("Done")).Ordinal = 3;
             }
 
             lock (this)

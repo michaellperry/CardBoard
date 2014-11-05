@@ -152,8 +152,7 @@ namespace CardBoard.Projects.ViewModels
             try
             {
                 var project = await _individual.Community.AddFactAsync(new Project(
-                    DateTime.Now,
-                    Utilities.GenerateRandomId()));
+                    DateTime.Now));
                 projectDetail.ToProject(project);
                 var member = await _individual.Community.AddFactAsync(new Member(
                     _individual,

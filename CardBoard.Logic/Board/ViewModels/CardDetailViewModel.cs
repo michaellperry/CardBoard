@@ -3,10 +3,6 @@ using CardBoard.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using UpdateControls.XAML;
 
 namespace CardBoard.Board.ViewModels
 {
@@ -29,6 +25,31 @@ namespace CardBoard.Board.ViewModels
             set { _cardDetail.Text = value; }
         }
 
+        public IEnumerable<ColumnViewModel> Columns
+        {
+            get
+            {
+                return
+                    from column in _project.Columns
+                    orderby column.Ordinal.Value
+                    select new ColumnViewModel(column);
+            }
+        }
+
+        public ColumnViewModel SelectedColumn
+        {
+            get
+            {
+                return _cardDetail.SelectedColumn == null ? null
+                    : new ColumnViewModel(_cardDetail.SelectedColumn);
+            }
+            set
+            {
+                _cardDetail.SelectedColumn = value == null ? null
+                    : value.Column;
+            }
+        }
+
         public void Ok()
         {
             _project.Community.Perform(async delegate
@@ -36,13 +57,10 @@ namespace CardBoard.Board.ViewModels
                 var card = _card;
                 if (card == null)
                 {
-                    card = await _project.Community.AddFactAsync(new Card(_project, DateTime.Now.ToUniversalTime()));
+                    card = await _project.Community.AddFactAsync(new Card(
+                        _project, DateTime.Now.ToUniversalTime()));
                 }
                 await _cardDetail.ToCard(card);
-
-                var column = await _project.MakeColumnAsync("To Do");
-                await _project.Community.AddFactAsync(
-                    new CardColumn(card, column, Enumerable.Empty<CardColumn>()));
             });
         }
     }
