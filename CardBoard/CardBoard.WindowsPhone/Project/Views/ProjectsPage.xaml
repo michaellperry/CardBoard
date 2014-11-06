@@ -1,0 +1,89 @@
+﻿<Page
+    x:Class="CardBoard.Projects.Views.ProjectsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CardBoard.Projects.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    DataContext="{Binding ProjectList, Source={StaticResource Locator}}">
+    <Page.Resources>
+        <DataTemplate
+            x:Key="ProjectItemTemplate">
+            <Grid>
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    Text="{Binding Name}"
+                    VerticalAlignment="Top"
+                    FontSize="21.333"
+                    Margin="10" />
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+	<Page.Background>
+		<StaticResource ResourceKey="AppBackgroundBrush"/>
+	</Page.Background>
+    <Page.BottomAppBar>
+        <AppBar>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    Orientation="Horizontal" />
+                <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Style="{StaticResource DeleteProjectAppBarButtonStyle}"
+                        Command="{Binding DeleteProject}" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Style="{StaticResource EditProjectAppBarButtonStyle}"
+                        Command="{Binding EditProject}"/>
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Style="{StaticResource AddProjectAppBarButtonStyle}"
+                        Command="{Binding AddProject}" />
+                </StackPanel>
+            </Grid>
+        </AppBar>
+    </Page.BottomAppBar>
+
+    <Grid>
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="Auto"/>
+    		<RowDefinition/>
+    	</Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+        	<TextBlock Text="CARD BOARD" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+        	<TextBlock Text="projects" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}" FontFamily="Global User Interface"/>
+        </StackPanel>
+    	<Grid
+    		Margin="20" Grid.RowSpan="2">
+    		<Grid.ColumnDefinitions>
+    			<ColumnDefinition
+    				Width="80" />
+    			<ColumnDefinition />
+    		</Grid.ColumnDefinitions>
+    		<Grid.RowDefinitions>
+    			<RowDefinition
+    				Height="100" />
+    			<RowDefinition />
+    		</Grid.RowDefinitions>
+    		<ListView
+    			Grid.Column="1"
+    			Grid.Row="1"
+    			ItemsSource="{Binding Projects}"
+    			SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
+    			ItemTemplate="{StaticResource ProjectItemTemplate}"
+    			Margin="10"/>
+    	</Grid>
+    </Grid>
+</Page>

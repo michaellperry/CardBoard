@@ -20,7 +20,7 @@
 	</Page.Background>
 
     <Grid DataContext="{Binding ProjectDetail}">
-        <Pivot>
+        <Pivot Title="{Binding Name}">
             <PivotItem Header="To Do">
                 <ListView
                     x:Name="ToDo"
@@ -49,8 +49,13 @@
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Label="New Card" Icon="Add" Click="NewCard_Click" />
-            <AppBarButton Label="Refresh" Command="{Binding Refresh}" Icon="Refresh" />
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Label="New Card" Icon="Add" Click="NewCard_Click" />
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Manage Projects" Click="ManageProjects_Click" />
+                <AppBarButton Label="Refresh" Command="{Binding Refresh}" />
+            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

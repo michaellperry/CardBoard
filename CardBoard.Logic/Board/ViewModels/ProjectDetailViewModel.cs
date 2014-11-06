@@ -36,6 +36,11 @@ namespace CardBoard.Board.ViewModels
             _doneColumn = new Dependent<Column>(() => GetColumn(project, "Done"));
         }
 
+        public string Name
+        {
+            get { return _project.Name; }
+        }
+
         public IEnumerable<CardViewModel> ToDoCards
         {
             get { return CardsInColumn(_toDoColumn); }

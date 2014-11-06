@@ -31,9 +31,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Project\Views\ProjectDetailControl.xaml.cs">
       <DependentUpon>ProjectDetailControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Project\Views\ProjectsPage.xaml.cs">
-      <DependentUpon>ProjectsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)SynchronizationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\ConflictValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelLocator.cs" />
@@ -68,10 +65,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Project\Views\ProjectDetailControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Project\Views\ProjectsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
