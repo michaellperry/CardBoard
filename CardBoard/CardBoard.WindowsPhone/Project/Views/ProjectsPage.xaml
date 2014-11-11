@@ -23,38 +23,6 @@
 	<Page.Background>
 		<StaticResource ResourceKey="AppBackgroundBrush"/>
 	</Page.Background>
-    <Page.BottomAppBar>
-        <AppBar>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <StackPanel
-                    Orientation="Horizontal" />
-                <StackPanel
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
-                    <Button
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Style="{StaticResource DeleteProjectAppBarButtonStyle}"
-                        Command="{Binding DeleteProject}" />
-                    <Button
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Style="{StaticResource EditProjectAppBarButtonStyle}"
-                        Command="{Binding EditProject}"/>
-                    <Button
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Style="{StaticResource AddProjectAppBarButtonStyle}"
-                        Command="{Binding AddProject}" />
-                </StackPanel>
-            </Grid>
-        </AppBar>
-    </Page.BottomAppBar>
 
     <Grid>
     	<Grid.RowDefinitions>
@@ -65,25 +33,11 @@
         	<TextBlock Text="CARD BOARD" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
         	<TextBlock Text="projects" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}" FontFamily="Global User Interface"/>
         </StackPanel>
-    	<Grid
-    		Margin="20" Grid.RowSpan="2">
-    		<Grid.ColumnDefinitions>
-    			<ColumnDefinition
-    				Width="80" />
-    			<ColumnDefinition />
-    		</Grid.ColumnDefinitions>
-    		<Grid.RowDefinitions>
-    			<RowDefinition
-    				Height="100" />
-    			<RowDefinition />
-    		</Grid.RowDefinitions>
     		<ListView
-    			Grid.Column="1"
     			Grid.Row="1"
     			ItemsSource="{Binding Projects}"
     			SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
     			ItemTemplate="{StaticResource ProjectItemTemplate}"
     			Margin="10"/>
-    	</Grid>
     </Grid>
 </Page>

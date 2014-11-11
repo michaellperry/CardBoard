@@ -1,19 +1,10 @@
 ﻿using CardBoard.Board.ViewModels;
 using CardBoard.Projects.Views;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UpdateControls.XAML;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.Phone.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -30,6 +21,7 @@ namespace CardBoard
             this.InitializeComponent();
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
+            HardwareButtons.BackPressed += HardwareButtons_BackPressed;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -88,6 +80,15 @@ namespace CardBoard
         private void ManageProjects_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(ProjectsPage));
+        }
+
+        void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
+        {
+            if (Frame.CanGoBack)
+            {
+                e.Handled = true;
+                Frame.GoBack();
+            }
         }
     }
 }
