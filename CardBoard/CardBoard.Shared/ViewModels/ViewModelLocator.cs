@@ -12,6 +12,8 @@ namespace CardBoard.ViewModels
             new Projects.Models.ProjectSelectionModel();
         private CardBoard.Board.Models.CardDetailModel _cardDetail =
             new Board.Models.CardDetailModel();
+        private CardBoard.Projects.Models.ProjectDetailModel _projectDetail =
+            new Projects.Models.ProjectDetailModel();
 
         public ViewModelLocator()
         {
@@ -53,7 +55,8 @@ namespace CardBoard.ViewModels
                     new Projects.ViewModels.ProjectListViewModel(
                         _synchronizationService,
                         _synchronizationService.Individual,
-                        _projectSelectionModel));
+                        _projectSelectionModel,
+                        _projectDetail));
             }
         }
     }

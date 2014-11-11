@@ -51,6 +51,7 @@
     <Compile Include="Board\ViewModels\ProjectHeaderViewModel.cs" />
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="ISynchronizationService.cs" />
+    <Compile Include="Projects\Models\NewProjectModel.cs" />
     <Compile Include="Projects\Models\ProjectDetailModel.cs" />
     <Compile Include="Projects\Models\ProjectEditedEventArgs.cs" />
     <Compile Include="Projects\Models\ProjectSelectionModel.cs" />

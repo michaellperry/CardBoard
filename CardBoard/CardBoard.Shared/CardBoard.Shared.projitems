@@ -28,6 +28,9 @@
       <DependentUpon>SnappedBoardControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)HTTPConfigurationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Project\Views\NewProjectControl.xaml.cs">
+      <DependentUpon>NewProjectControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Project\Views\ProjectDetailControl.xaml.cs">
       <DependentUpon>ProjectDetailControl.xaml</DependentUpon>
     </Compile>
@@ -61,6 +64,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Common\StandardStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Project\Views\NewProjectControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

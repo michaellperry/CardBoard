@@ -165,7 +165,7 @@ namespace CardBoard
             if (project == null || !projects.Contains(project))
             {
                 project = await _community.AddFactAsync(
-                    new Project(DateTime.Now));
+                    new Project("initialproject"));
                 project.Name = "My Project";
                 await _community.AddFactAsync(new Member(individual, project));
                 await _community.SetFactAsync(CurrentProject, project);

@@ -224,8 +224,7 @@ namespace CardBoard.Model
 				{
 					using (BinaryReader output = new BinaryReader(data))
 					{
-						newFact._unique = (Guid)_fieldSerializerByType[typeof(Guid)].ReadData(output);
-						newFact._created = (DateTime)_fieldSerializerByType[typeof(DateTime)].ReadData(output);
+						newFact._identifier = (string)_fieldSerializerByType[typeof(string)].ReadData(output);
 					}
 				}
 
@@ -235,8 +234,7 @@ namespace CardBoard.Model
 			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
 			{
 				Project fact = (Project)obj;
-				_fieldSerializerByType[typeof(Guid)].WriteData(output, fact._unique);
-				_fieldSerializerByType[typeof(DateTime)].WriteData(output, fact._created);
+				_fieldSerializerByType[typeof(string)].WriteData(output, fact._identifier);
 			}
 
             public CorrespondenceFact GetUnloadedInstance()
@@ -252,7 +250,7 @@ namespace CardBoard.Model
 
 		// Type
 		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
-			"CardBoard.Model.Project", 70);
+			"CardBoard.Model.Project", 8);
 
 		protected override CorrespondenceFactType GetCorrespondenceFactType()
 		{
@@ -328,11 +326,8 @@ namespace CardBoard.Model
 
         // Predecessors
 
-        // Unique
-        private Guid _unique;
-
         // Fields
-        private DateTime _created;
+        private string _identifier;
 
         // Results
         private Result<Project__name> _name;
@@ -341,12 +336,11 @@ namespace CardBoard.Model
 
         // Business constructor
         public Project(
-            DateTime created
+            string identifier
             )
         {
-            _unique = Guid.NewGuid();
             InitializeResults();
-            _created = created;
+            _identifier = identifier;
         }
 
         // Hydration constructor
@@ -366,11 +360,9 @@ namespace CardBoard.Model
         // Predecessor access
 
         // Field access
-		public Guid Unique { get { return _unique; } }
-
-        public DateTime Created
+        public string Identifier
         {
-            get { return _created; }
+            get { return _identifier; }
         }
 
         // Query result access

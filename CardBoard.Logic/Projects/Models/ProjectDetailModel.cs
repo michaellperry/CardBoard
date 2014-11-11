@@ -1,18 +1,19 @@
 ﻿using CardBoard.Model;
 using System;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace CardBoard.Projects.Models
 {
     public class ProjectDetailModel
     {
+        public string Identifier { get; set; }
         public string Name { get; set; }
 
-        public static ProjectDetailModel FromProject(Project project)
+        public void FromProject(Project project)
         {
-            return new ProjectDetailModel
-            {
-                Name = project.Name
-            };
+            Identifier = project.Identifier;
+            Name = project.Name;
         }
 
         public void ToProject(Project project)

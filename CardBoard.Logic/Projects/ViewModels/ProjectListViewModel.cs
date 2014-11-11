@@ -14,18 +14,22 @@ namespace CardBoard.Projects.ViewModels
         private readonly ISynchronizationService _synchronizationService;
         private readonly Individual _individual;
         private readonly ProjectSelectionModel _projectSelectionModel;
-        
+
+        private readonly ProjectDetailModel _projectDetail;
+
         public delegate void ProjectEditedHandler(object sender, ProjectEditedEventArgs args);
         public event ProjectEditedHandler ProjectEdited;
-        
+
         public ProjectListViewModel(
             ISynchronizationService synchronizationService,
             Individual individual,
-            ProjectSelectionModel projectSelectionModel)
+            ProjectSelectionModel projectSelectionModel,
+            ProjectDetailModel projectDetail)
         {
             _synchronizationService = synchronizationService;
             _individual = individual;
             _projectSelectionModel = projectSelectionModel;
+            _projectDetail = projectDetail;
         }
 
         public string LastError
@@ -50,7 +54,6 @@ namespace CardBoard.Projects.ViewModels
             {
                 return
                     from project in _individual.Projects
-                    orderby project.Created
                     select new ProjectHeaderViewModel(project);
             }
         }
@@ -95,11 +98,11 @@ namespace CardBoard.Projects.ViewModels
                         var project = _projectSelectionModel.SelectedProject;
                         if (ProjectEdited != null)
                         {
+                            _projectDetail.FromProject(project);
                             ProjectEdited(this, new ProjectEditedEventArgs
                             {
-                                ProjectDetail = ProjectDetailModel.FromProject(project),
-                                Completed = projectDetail =>
-                                    projectDetail.ToProject(project)
+                                ProjectDetail = _projectDetail,
+                                Completed = d => d.ToProject(project)
                             });
                         }
                     });
@@ -117,9 +120,8 @@ namespace CardBoard.Projects.ViewModels
                         {
                             ProjectEdited(this, new ProjectEditedEventArgs
                             {
-                                ProjectDetail = new ProjectDetailModel(),
-                                Completed = projectDetail =>
-                                    AddProjectInternal(projectDetail)
+                                ProjectDetail = _projectDetail,
+                                Completed = d => AddProjectInternal(d)
                             });
                         }
                     });
@@ -152,7 +154,7 @@ namespace CardBoard.Projects.ViewModels
             try
             {
                 var project = await _individual.Community.AddFactAsync(new Project(
-                    DateTime.Now));
+                    projectDetail.NormalizeIdentifier()));
                 projectDetail.ToProject(project);
                 var member = await _individual.Community.AddFactAsync(new Member(
                     _individual,

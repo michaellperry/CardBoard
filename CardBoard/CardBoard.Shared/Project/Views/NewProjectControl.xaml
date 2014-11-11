@@ -1,12 +1,12 @@
 ﻿<UserControl
-    x:Class="CardBoard.Projects.Views.ProjectDetailControl"
+    x:Class="CardBoard.Project.Views.NewProjectControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CardBoard.Projects.Views"
+    xmlns:local="using:CardBoard.Project.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Loaded="ProjectDetail_Loaded"
+    Loaded="NewProject_Loaded"
     d:DesignHeight="900"
     d:DesignWidth="1600">
 
@@ -18,15 +18,13 @@
             <StackPanel
                 Margin="10"
                 HorizontalAlignment="Center" Width="300">
-                <TextBlock TextWrapping="Wrap" Text="Identifier:" FontSize="18.667" Foreground="Black" Margin="10,10,10,0"/>
-                <TextBlock TextWrapping="Wrap" Text="{Binding Identifier}" FontSize="21.333" Foreground="Black" Margin="10,10,10,0"/>
                 <TextBlock
-                    Text="Name:"
+                    Text="Identifier:"
                     Margin="10,10,10,0" FontSize="18.667" Foreground="Black" />
                 <TextBox
-                    x:Name="NameTextBox"
+                    x:Name="IdentifierTextBox"
                     Margin="10,0,10,10"
-                    Text="{Binding Name, Mode=TwoWay}" FontFamily="Global User Interface" />
+                    Text="{Binding Identifier, Mode=TwoWay}" FontFamily="Global User Interface" />
                 <StackPanel
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
