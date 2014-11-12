@@ -19,6 +19,8 @@ namespace CardBoard.Projects.ViewModels
 
         public delegate void ProjectEditedHandler(object sender, ProjectEditedEventArgs args);
         public event ProjectEditedHandler ProjectEdited;
+        public event ProjectEditedHandler ProjectAdded;
+        public event ProjectEditedHandler ProjectJoined;
 
         public ProjectListViewModel(
             ISynchronizationService synchronizationService,
@@ -117,10 +119,10 @@ namespace CardBoard.Projects.ViewModels
                 return MakeCommand
                     .Do(delegate
                     {
-                        if (ProjectEdited != null)
+                        if (ProjectAdded != null)
                         {
                             _projectDetail.Clear();
-                            ProjectEdited(this, new ProjectEditedEventArgs
+                            ProjectAdded(this, new ProjectEditedEventArgs
                             {
                                 ProjectDetail = _projectDetail,
                                 Completed = d => AddProjectInternal(d)
@@ -137,10 +139,10 @@ namespace CardBoard.Projects.ViewModels
                 return MakeCommand
                     .Do(delegate
                     {
-                        if (ProjectEdited != null)
+                        if (ProjectJoined != null)
                         {
                             _projectDetail.Clear();
-                            ProjectEdited(this, new ProjectEditedEventArgs
+                            ProjectJoined(this, new ProjectEditedEventArgs
                             {
                                 ProjectDetail = _projectDetail,
                                 Completed = d => JoinProjectInternal(d)

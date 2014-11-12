@@ -25,6 +25,13 @@
                     x:Name="IdentifierTextBox"
                     Margin="10,0,10,10"
                     Text="{Binding Identifier, Mode=TwoWay}" FontFamily="Global User Interface" />
+                <TextBlock
+                	Text="Name:"
+                	Margin="10,10,10,0" FontSize="18.667" Foreground="Black" />
+                <TextBox
+                	x:Name="NameTextBox"
+                	Margin="10,0,10,10"
+                	Text="{Binding Name, Mode=TwoWay}" />
                 <StackPanel
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
