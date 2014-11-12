@@ -54,6 +54,7 @@ namespace CardBoard.Projects.ViewModels
             {
                 return
                     from project in _individual.Projects
+                    orderby project.Created
                     select new ProjectHeaderViewModel(project);
             }
         }
@@ -128,9 +129,9 @@ namespace CardBoard.Projects.ViewModels
             }
         }
 
-        private async void DeleteProjectInternal(Project project)
+        private void DeleteProjectInternal(Project project)
         {
-            try
+            _synchronizationService.Community.Perform(async delegate
             {
                 var members = (await _individual.Memberships.EnsureAsync())
                     .Where(m => m.Project == project);
@@ -142,30 +143,22 @@ namespace CardBoard.Projects.ViewModels
                     var projects = await _individual.Projects.EnsureAsync();
                     _synchronizationService.Project = projects.FirstOrDefault();
                 }
-            }
-            catch (Exception x)
-            {
-                // TODO: Report the exception.
-            }
+            });
         }
 
-        private async void AddProjectInternal(ProjectDetailModel projectDetail)
+        private void AddProjectInternal(ProjectDetailModel projectDetail)
         {
-            try
+            _synchronizationService.Community.Perform(async delegate
             {
                 var project = await _individual.Community.AddFactAsync(new Project(
-                    projectDetail.NormalizeIdentifier()));
+                    DateTime.Now));
                 projectDetail.ToProject(project);
                 var member = await _individual.Community.AddFactAsync(new Member(
                     _individual,
                     project));
 
                 _synchronizationService.Project = project;
-            }
-            catch (Exception x)
-            {
-                // TODO: Report the exception.
-            }
+            });
         }
     }
 }

@@ -24,7 +24,8 @@ query:
 
 fact Project {
 key:
-    string identifier;
+    unique;
+    time created;
 
 mutable:
     publish string name;

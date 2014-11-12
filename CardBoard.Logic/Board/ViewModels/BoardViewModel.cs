@@ -84,6 +84,7 @@ namespace CardBoard.Board.ViewModels
 
                 return
                     from project in _synchronizationService.Individual.Projects
+                    orderby project.Created
                     select new ProjectHeaderViewModel(project);
             }
         }

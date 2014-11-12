@@ -12,7 +12,6 @@ namespace CardBoard.Projects.Models
 
         public void FromProject(Project project)
         {
-            Identifier = project.Identifier;
             Name = project.Name;
         }
 

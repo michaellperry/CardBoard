@@ -21,8 +21,8 @@ namespace CardBoard
         private Community _community;
         private Independent<Individual> _individual = new Independent<Individual>(
             Individual.GetNullInstance());
-        private Independent<Project> _project = new Independent<Project>(
-            Project.GetNullInstance());
+        private Independent<CardBoard.Model.Project> _project = new Independent<CardBoard.Model.Project>(
+            CardBoard.Model.Project.GetNullInstance());
 
         public void Initialize()
         {
@@ -68,7 +68,7 @@ namespace CardBoard
             }
         }
 
-        public Project Project
+        public CardBoard.Model.Project Project
         {
             get
             {
@@ -132,7 +132,7 @@ namespace CardBoard
             });
         }
 
-        private void SetCurrentProject(Project project)
+        private void SetCurrentProject(CardBoard.Model.Project project)
         {
             _community.Perform(async delegate
             {
@@ -158,14 +158,14 @@ namespace CardBoard
             return individual;
         }
 
-        private async Task<Project> InitializeProject(Individual individual)
+        private async Task<CardBoard.Model.Project> InitializeProject(Individual individual)
         {
-            Project project = await _community.LoadFactAsync<Project>(CurrentProject);
+            CardBoard.Model.Project project = await _community.LoadFactAsync<CardBoard.Model.Project>(CurrentProject);
             var projects = await individual.Projects.EnsureAsync();
             if (project == null || !projects.Contains(project))
             {
                 project = await _community.AddFactAsync(
-                    new Project("initialproject"));
+                    new CardBoard.Model.Project(DateTime.Now));
                 project.Name = "My Project";
                 await _community.AddFactAsync(new Member(individual, project));
                 await _community.SetFactAsync(CurrentProject, project);
