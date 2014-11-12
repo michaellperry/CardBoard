@@ -119,10 +119,31 @@ namespace CardBoard.Projects.ViewModels
                     {
                         if (ProjectEdited != null)
                         {
+                            _projectDetail.Clear();
                             ProjectEdited(this, new ProjectEditedEventArgs
                             {
                                 ProjectDetail = _projectDetail,
                                 Completed = d => AddProjectInternal(d)
+                            });
+                        }
+                    });
+            }
+        }
+
+        public ICommand JoinProject
+        {
+            get
+            {
+                return MakeCommand
+                    .Do(delegate
+                    {
+                        if (ProjectEdited != null)
+                        {
+                            _projectDetail.Clear();
+                            ProjectEdited(this, new ProjectEditedEventArgs
+                            {
+                                ProjectDetail = _projectDetail,
+                                Completed = d => JoinProjectInternal(d)
                             });
                         }
                     });
@@ -153,12 +174,17 @@ namespace CardBoard.Projects.ViewModels
                 var project = await _individual.Community.AddFactAsync(new Project(
                     DateTime.Now));
                 projectDetail.ToProject(project);
-                var member = await _individual.Community.AddFactAsync(new Member(
-                    _individual,
-                    project));
+                await _individual.Community.AddFactAsync(new Member(_individual, project));
+                (await project.MakeColumnAsync("To Do")).Ordinal = 1;
+                (await project.MakeColumnAsync("Doing")).Ordinal = 2;
+                (await project.MakeColumnAsync("Done")).Ordinal = 3;
 
                 _synchronizationService.Project = project;
             });
+        }
+
+        private void JoinProjectInternal(ProjectDetailModel projectDetail)
+        {
         }
     }
 }

@@ -162,21 +162,15 @@ namespace CardBoard
         {
             CardBoard.Model.Project project = await _community.LoadFactAsync<CardBoard.Model.Project>(CurrentProject);
             var projects = await individual.Projects.EnsureAsync();
-            if (project == null || !projects.Contains(project))
+            if (project == null && projects.Any())
             {
-                project = await _community.AddFactAsync(
-                    new CardBoard.Model.Project(DateTime.Now));
-                project.Name = "My Project";
-                await _community.AddFactAsync(new Member(individual, project));
+                project = projects.First();
                 await _community.SetFactAsync(CurrentProject, project);
-                (await project.MakeColumnAsync("To Do")).Ordinal = 1;
-                (await project.MakeColumnAsync("Doing")).Ordinal = 2;
-                (await project.MakeColumnAsync("Done")).Ordinal = 3;
             }
 
             lock (this)
             {
-                _project.Value = project;
+                _project.Value = project ?? CardBoard.Model.Project.GetNullInstance();
             }
             return project;
         }

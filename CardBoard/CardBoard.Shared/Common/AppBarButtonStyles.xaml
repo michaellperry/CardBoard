@@ -354,6 +354,21 @@
     </Style>
 
     <Style
+        x:Key="JoinProjectAppBarButtonStyle"
+        TargetType="ButtonBase"
+        BasedOn="{StaticResource AppBarButtonStyle}">
+        <Setter
+            Property="AutomationProperties.AutomationId"
+            Value="JoinProjectAppBarButton" />
+        <Setter
+            Property="AutomationProperties.Name"
+            Value="Join Project" />
+        <Setter
+            Property="Content"
+            Value="&#xE1E2;" />
+    </Style>
+
+    <Style
         x:Key="EditProjectAppBarButtonStyle"
         TargetType="ButtonBase"
         BasedOn="{StaticResource AppBarButtonStyle}">

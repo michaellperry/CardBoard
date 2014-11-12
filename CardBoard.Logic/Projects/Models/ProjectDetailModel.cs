@@ -10,6 +10,11 @@ namespace CardBoard.Projects.Models
         public string Identifier { get; set; }
         public string Name { get; set; }
 
+        public void Clear()
+        {
+            Name = string.Empty;
+        }
+
         public void FromProject(Project project)
         {
             Name = project.Name;
