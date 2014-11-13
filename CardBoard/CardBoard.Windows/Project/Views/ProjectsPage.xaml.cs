@@ -44,42 +44,28 @@ namespace CardBoard.Projects.Views
 
         void ProjectEdited(object sender, Models.ProjectEditedEventArgs args)
         {
-            Popup popup = new Popup()
-            {
-                ChildTransitions = new TransitionCollection { new PopupThemeTransition() }
-            };
-            var detail = new ProjectDetailControl()
-            {
-                Width = Window.Current.Bounds.Width,
-                Height = Window.Current.Bounds.Height,
-                DataContext = args.ProjectDetail
-            };
-            detail.Ok += delegate
-            {
-                popup.IsOpen = false;
-                if (args.Completed != null)
-                    args.Completed(args.ProjectDetail);
-            };
-            detail.Cancel += delegate
-            {
-                popup.IsOpen = false;
-            };
-            popup.Child = detail;
-            popup.IsOpen = true;
+            DisplayDialog(args, new ProjectDetailControl());
         }
 
         private void ProjectAdded(object sender, CardBoard.Projects.Models.ProjectEditedEventArgs args)
         {
+            DisplayDialog(args, new NewProjectControl());
+        }
+
+        private void ProjectJoined(object sender, CardBoard.Projects.Models.ProjectEditedEventArgs args)
+        {
+            DisplayDialog(args, new JoinProjectControl());
+        }
+
+        private static void DisplayDialog(Models.ProjectEditedEventArgs args, IDialogControl detail)
+        {
             Popup popup = new Popup()
             {
                 ChildTransitions = new TransitionCollection { new PopupThemeTransition() }
             };
-            var detail = new NewProjectControl()
-            {
-                Width = Window.Current.Bounds.Width,
-                Height = Window.Current.Bounds.Height,
-                DataContext = args.ProjectDetail
-            };
+            detail.Width = Window.Current.Bounds.Width;
+            detail.Height = Window.Current.Bounds.Height;
+            detail.DataContext = args.ProjectDetail;
             detail.Ok += delegate
             {
                 popup.IsOpen = false;
@@ -90,13 +76,8 @@ namespace CardBoard.Projects.Views
             {
                 popup.IsOpen = false;
             };
-            popup.Child = detail;
+            popup.Child = (UIElement)detail;
             popup.IsOpen = true;
-        }
-
-        private void ProjectJoined(object sender, CardBoard.Projects.Models.ProjectEditedEventArgs args)
-        {
-            throw new System.NotImplementedException();
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)

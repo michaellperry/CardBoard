@@ -3,17 +3,17 @@ using Windows.UI.Xaml.Controls;
 
 namespace CardBoard.Project.Views
 {
-    public sealed partial class NewProjectControl : UserControl, IDialogControl
+    public sealed partial class JoinProjectControl : UserControl, IDialogControl
     {
         public event RoutedEventHandler Ok;
         public event RoutedEventHandler Cancel;
 
-        public NewProjectControl()
+        public JoinProjectControl()
         {
             this.InitializeComponent();
         }
 
-        private void NewProject_Loaded(object sender, RoutedEventArgs e)
+        private void JoinProject_Loaded(object sender, RoutedEventArgs e)
         {
             IdentifierTextBox.Focus(Windows.UI.Xaml.FocusState.Keyboard);
             IdentifierTextBox.SelectAll();

@@ -1,9 +1,10 @@
-﻿using Windows.UI.Xaml;
+﻿using CardBoard.Project.Views;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace CardBoard.Projects.Views
 {
-    public sealed partial class ProjectDetailControl : UserControl
+    public sealed partial class ProjectDetailControl : UserControl, IDialogControl
     {
         public event RoutedEventHandler Ok;
         public event RoutedEventHandler Cancel;
