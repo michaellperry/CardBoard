@@ -8,5 +8,6 @@ namespace CardBoard
         Project Project { get; set; }
         Community Community { get; }
         Individual Individual { get; }
+        void SubscribeTo(Identifier identifier);
     }
 }

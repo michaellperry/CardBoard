@@ -177,6 +177,8 @@ namespace CardBoard.Projects.ViewModels
                     DateTime.Now));
                 projectDetail.ToProject(project);
                 await _individual.Community.AddFactAsync(new Member(_individual, project));
+                var identifier = await _individual.Community.AddFactAsync(new Identifier(projectDetail.Identifier));
+                await _individual.Community.AddFactAsync(new ProjectIdentifier(project, identifier));
                 (await project.MakeColumnAsync("To Do")).Ordinal = 1;
                 (await project.MakeColumnAsync("Doing")).Ordinal = 2;
                 (await project.MakeColumnAsync("Done")).Ordinal = 3;
@@ -187,6 +189,12 @@ namespace CardBoard.Projects.ViewModels
 
         private void JoinProjectInternal(ProjectDetailModel projectDetail)
         {
+            _synchronizationService.Community.Perform(async delegate
+            {
+                var identifier = await _synchronizationService.Community.AddFactAsync(
+                    new Identifier(projectDetail.Identifier));
+                _synchronizationService.SubscribeTo(identifier);
+            });
         }
     }
 }

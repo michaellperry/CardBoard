@@ -1,9 +1,12 @@
 using CardBoard.Common;
 using CardBoard.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using UpdateControls;
+using UpdateControls.Collections;
 using UpdateControls.Correspondence;
 using UpdateControls.Correspondence.BinaryHTTPClient;
 using UpdateControls.Correspondence.FileStream;
@@ -13,7 +16,7 @@ using Windows.UI.Xaml;
 
 namespace CardBoard
 {
-    public class SynchronizationService : ISynchronizationService
+    public class SynchronizationService : ISynchronizationService, IUpdatable
     {
         private const string ThisIndividual = "CardBoard.Individual.this";
         private const string CurrentProject = "CardBoard.Project.current";
@@ -23,6 +26,9 @@ namespace CardBoard
             Individual.GetNullInstance());
         private Independent<CardBoard.Model.Project> _project = new Independent<CardBoard.Model.Project>(
             CardBoard.Model.Project.GetNullInstance());
+        private IndependentList<Identifier> _identifiers = new IndependentList<Identifier>();
+
+        private Dependent<IEnumerable<Model.Project>> _pendingProjects;
 
         public void Initialize()
         {
@@ -35,10 +41,15 @@ namespace CardBoard
             _community.Register<CorrespondenceModel>();
             _community.Subscribe(() => Individual);
             _community.Subscribe(() => Individual.Projects);
+            _community.Subscribe(() => (IEnumerable<Identifier>)_identifiers);
 
             ScheduleSynchronization(http);
 
             LoadInitialFacts(http);
+
+            _pendingProjects = new Dependent<IEnumerable<Model.Project>>(FindPendingProjects);
+            _pendingProjects.Invalidated += JoinPendingProjects;
+            JoinPendingProjects();
         }
 
         public void InitializeDesignMode()
@@ -91,6 +102,11 @@ namespace CardBoard
         {
             _community.BeginSending();
             _community.BeginReceiving();
+        }
+
+        public void SubscribeTo(Identifier identifier)
+        {
+            _identifiers.Add(identifier);
         }
 
         private void ScheduleSynchronization(HTTPConfigurationProvider http)
@@ -173,6 +189,36 @@ namespace CardBoard
                 _project.Value = project ?? CardBoard.Model.Project.GetNullInstance();
             }
             return project;
+        }
+
+        private IEnumerable<Model.Project> FindPendingProjects()
+        {
+            Individual individual = Individual;
+            if (individual.IsNull)
+                return Enumerable.Empty<Model.Project>();
+            else
+                return
+                    from identifier in _identifiers
+                    from project in identifier.Projects
+                    where !individual.Projects.Contains(project)
+                    select project;
+        }
+
+        private void JoinPendingProjects()
+        {
+            UpdateScheduler.ScheduleUpdate(this);
+        }
+
+        public void UpdateNow()
+        {
+            var pendingProjects = _pendingProjects.Value.ToList();
+            _community.Perform(async delegate
+            {
+                foreach (var project in pendingProjects)
+                {
+                    await _community.AddFactAsync(new Member(Individual, project));
+                }
+            });
         }
     }
 }

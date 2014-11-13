@@ -42,6 +42,28 @@ query:
         Card card : cc.card = card
             where not card.isDeleted
     }
+
+    Identifier* identifiers {
+        ProjectIdentifier pi : pi.project = this
+        Identifier i : pi.identifier = i
+    }
+}
+
+fact Identifier {
+key:
+    string token;
+
+query:
+    Project* projects {
+        ProjectIdentifier pi : pi.identifier = this
+        Project p : pi.project = p
+    }
+}
+
+fact ProjectIdentifier {
+key:
+    Project project;
+    publish Identifier identifier;
 }
 
 fact Member {

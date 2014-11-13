@@ -7,8 +7,20 @@ namespace CardBoard.Projects.Models
 {
     public class ProjectDetailModel
     {
-        public string Identifier { get; set; }
-        public string Name { get; set; }
+        private string _identifier;
+        private string _name;
+
+        public string Identifier
+        {
+            get { return _identifier; }
+            set { _identifier = value; }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
 
         public void Clear()
         {

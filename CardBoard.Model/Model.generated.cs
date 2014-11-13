@@ -14,6 +14,8 @@ digraph "CardBoard.Model"
     rankdir=BT
     Project__name -> Project [color="red"]
     Project__name -> Project__name [label="  *"]
+    ProjectIdentifier -> Project
+    ProjectIdentifier -> Identifier [color="red"]
     Member -> Individual [color="red"]
     Member -> Project
     MemberDelete -> Member
@@ -323,6 +325,19 @@ namespace CardBoard.Model
             }
             return _cacheQueryCards;
 		}
+        private static Query _cacheQueryIdentifiers;
+
+        public static Query GetQueryIdentifiers()
+		{
+            if (_cacheQueryIdentifiers == null)
+            {
+			    _cacheQueryIdentifiers = new Query()
+		    		.JoinSuccessors(ProjectIdentifier.GetRoleProject())
+		    		.JoinPredecessors(ProjectIdentifier.GetRoleIdentifier())
+                ;
+            }
+            return _cacheQueryIdentifiers;
+		}
 
         // Predicates
 
@@ -338,6 +353,7 @@ namespace CardBoard.Model
         private Result<Project__name> _name;
         private Result<Column> _columns;
         private Result<Card> _cards;
+        private Result<Identifier> _identifiers;
 
         // Business constructor
         public Project(
@@ -361,6 +377,7 @@ namespace CardBoard.Model
             _name = new Result<Project__name>(this, GetQueryName(), Project__name.GetUnloadedInstance, Project__name.GetNullInstance);
             _columns = new Result<Column>(this, GetQueryColumns(), Column.GetUnloadedInstance, Column.GetNullInstance);
             _cards = new Result<Card>(this, GetQueryCards(), Card.GetUnloadedInstance, Card.GetNullInstance);
+            _identifiers = new Result<Identifier>(this, GetQueryIdentifiers(), Identifier.GetUnloadedInstance, Identifier.GetNullInstance);
         }
 
         // Predecessor access
@@ -381,6 +398,10 @@ namespace CardBoard.Model
         public Result<Card> Cards
         {
             get { return _cards; }
+        }
+        public Result<Identifier> Identifiers
+        {
+            get { return _identifiers; }
         }
 
         // Mutable property access
@@ -571,6 +592,293 @@ namespace CardBoard.Model
         {
             get { return _value; }
         }
+
+        // Query result access
+
+        // Mutable property access
+
+    }
+    
+    public partial class Identifier : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				Identifier newFact = new Identifier(memento);
+
+				// Create a memory stream from the memento data.
+				using (MemoryStream data = new MemoryStream(memento.Data))
+				{
+					using (BinaryReader output = new BinaryReader(data))
+					{
+						newFact._token = (string)_fieldSerializerByType[typeof(string)].ReadData(output);
+					}
+				}
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				Identifier fact = (Identifier)obj;
+				_fieldSerializerByType[typeof(string)].WriteData(output, fact._token);
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return Identifier.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return Identifier.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"CardBoard.Model.Identifier", 8);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static Identifier GetUnloadedInstance()
+        {
+            return new Identifier((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static Identifier GetNullInstance()
+        {
+            return new Identifier((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<Identifier> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (Identifier)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+
+        // Queries
+        private static Query _cacheQueryProjects;
+
+        public static Query GetQueryProjects()
+		{
+            if (_cacheQueryProjects == null)
+            {
+			    _cacheQueryProjects = new Query()
+		    		.JoinSuccessors(ProjectIdentifier.GetRoleIdentifier())
+		    		.JoinPredecessors(ProjectIdentifier.GetRoleProject())
+                ;
+            }
+            return _cacheQueryProjects;
+		}
+
+        // Predicates
+
+        // Predecessors
+
+        // Fields
+        private string _token;
+
+        // Results
+        private Result<Project> _projects;
+
+        // Business constructor
+        public Identifier(
+            string token
+            )
+        {
+            InitializeResults();
+            _token = token;
+        }
+
+        // Hydration constructor
+        private Identifier(FactMemento memento)
+        {
+            InitializeResults();
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+            _projects = new Result<Project>(this, GetQueryProjects(), Project.GetUnloadedInstance, Project.GetNullInstance);
+        }
+
+        // Predecessor access
+
+        // Field access
+        public string Token
+        {
+            get { return _token; }
+        }
+
+        // Query result access
+        public Result<Project> Projects
+        {
+            get { return _projects; }
+        }
+
+        // Mutable property access
+
+    }
+    
+    public partial class ProjectIdentifier : CorrespondenceFact
+    {
+		// Factory
+		internal class CorrespondenceFactFactory : ICorrespondenceFactFactory
+		{
+			private IDictionary<Type, IFieldSerializer> _fieldSerializerByType;
+
+			public CorrespondenceFactFactory(IDictionary<Type, IFieldSerializer> fieldSerializerByType)
+			{
+				_fieldSerializerByType = fieldSerializerByType;
+			}
+
+			public CorrespondenceFact CreateFact(FactMemento memento)
+			{
+				ProjectIdentifier newFact = new ProjectIdentifier(memento);
+
+
+				return newFact;
+			}
+
+			public void WriteFactData(CorrespondenceFact obj, BinaryWriter output)
+			{
+				ProjectIdentifier fact = (ProjectIdentifier)obj;
+			}
+
+            public CorrespondenceFact GetUnloadedInstance()
+            {
+                return ProjectIdentifier.GetUnloadedInstance();
+            }
+
+            public CorrespondenceFact GetNullInstance()
+            {
+                return ProjectIdentifier.GetNullInstance();
+            }
+		}
+
+		// Type
+		internal static CorrespondenceFactType _correspondenceFactType = new CorrespondenceFactType(
+			"CardBoard.Model.ProjectIdentifier", -1541861916);
+
+		protected override CorrespondenceFactType GetCorrespondenceFactType()
+		{
+			return _correspondenceFactType;
+		}
+
+        // Null and unloaded instances
+        public static ProjectIdentifier GetUnloadedInstance()
+        {
+            return new ProjectIdentifier((FactMemento)null) { IsLoaded = false };
+        }
+
+        public static ProjectIdentifier GetNullInstance()
+        {
+            return new ProjectIdentifier((FactMemento)null) { IsNull = true };
+        }
+
+        // Ensure
+        public Task<ProjectIdentifier> EnsureAsync()
+        {
+            if (_loadedTask != null)
+                return _loadedTask.ContinueWith(t => (ProjectIdentifier)t.Result);
+            else
+                return Task.FromResult(this);
+        }
+
+        // Roles
+        private static Role _cacheRoleProject;
+        public static Role GetRoleProject()
+        {
+            if (_cacheRoleProject == null)
+            {
+                _cacheRoleProject = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "project",
+			        Project._correspondenceFactType,
+			        false));
+            }
+            return _cacheRoleProject;
+        }
+        private static Role _cacheRoleIdentifier;
+        public static Role GetRoleIdentifier()
+        {
+            if (_cacheRoleIdentifier == null)
+            {
+                _cacheRoleIdentifier = new Role(new RoleMemento(
+			        _correspondenceFactType,
+			        "identifier",
+			        Identifier._correspondenceFactType,
+			        true));
+            }
+            return _cacheRoleIdentifier;
+        }
+
+        // Queries
+
+        // Predicates
+
+        // Predecessors
+        private PredecessorObj<Project> _project;
+        private PredecessorObj<Identifier> _identifier;
+
+        // Fields
+
+        // Results
+
+        // Business constructor
+        public ProjectIdentifier(
+            Project project
+            ,Identifier identifier
+            )
+        {
+            InitializeResults();
+            _project = new PredecessorObj<Project>(this, GetRoleProject(), project);
+            _identifier = new PredecessorObj<Identifier>(this, GetRoleIdentifier(), identifier);
+        }
+
+        // Hydration constructor
+        private ProjectIdentifier(FactMemento memento)
+        {
+            InitializeResults();
+            _project = new PredecessorObj<Project>(this, GetRoleProject(), memento, Project.GetUnloadedInstance, Project.GetNullInstance);
+            _identifier = new PredecessorObj<Identifier>(this, GetRoleIdentifier(), memento, Identifier.GetUnloadedInstance, Identifier.GetNullInstance);
+        }
+
+        // Result initializer
+        private void InitializeResults()
+        {
+        }
+
+        // Predecessor access
+        public Project Project
+        {
+            get { return IsNull ? Project.GetNullInstance() : _project.Fact; }
+        }
+        public Identifier Identifier
+        {
+            get { return IsNull ? Identifier.GetNullInstance() : _identifier.Fact; }
+        }
+
+        // Field access
 
         // Query result access
 
@@ -2190,6 +2498,9 @@ namespace CardBoard.Model
 			community.AddQuery(
 				Project._correspondenceFactType,
 				Project.GetQueryCards().QueryDefinition);
+			community.AddQuery(
+				Project._correspondenceFactType,
+				Project.GetQueryIdentifiers().QueryDefinition);
 			community.AddType(
 				Project__name._correspondenceFactType,
 				new Project__name.CorrespondenceFactFactory(fieldSerializerByType),
@@ -2197,6 +2508,17 @@ namespace CardBoard.Model
 			community.AddQuery(
 				Project__name._correspondenceFactType,
 				Project__name.GetQueryIsCurrent().QueryDefinition);
+			community.AddType(
+				Identifier._correspondenceFactType,
+				new Identifier.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { Identifier._correspondenceFactType }));
+			community.AddQuery(
+				Identifier._correspondenceFactType,
+				Identifier.GetQueryProjects().QueryDefinition);
+			community.AddType(
+				ProjectIdentifier._correspondenceFactType,
+				new ProjectIdentifier.CorrespondenceFactFactory(fieldSerializerByType),
+				new FactMetadata(new List<CorrespondenceFactType> { ProjectIdentifier._correspondenceFactType }));
 			community.AddType(
 				Member._correspondenceFactType,
 				new Member.CorrespondenceFactFactory(fieldSerializerByType),
