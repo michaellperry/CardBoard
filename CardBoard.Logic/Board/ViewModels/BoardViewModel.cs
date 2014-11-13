@@ -150,20 +150,16 @@ namespace CardBoard.Board.ViewModels
                         var selectedCard = SelectedCard;
                         if (CardEdited != null)
                         {
-                            _synchronizationService.Community
-                                .Perform(async delegate
-                                {
-                                    await _cardDetail.FromCard(selectedCard);
-                                    CardEdited(this, new CardEditedEventArgs
+                            _cardDetail.FromCard(selectedCard);
+                            CardEdited(this, new CardEditedEventArgs
+                            {
+                                CardDetail = _cardDetail,
+                                Completed = c => _synchronizationService.Community
+                                    .Perform(async delegate
                                     {
-                                        CardDetail = _cardDetail,
-                                        Completed = c => _synchronizationService.Community
-                                            .Perform(async delegate
-                                            {
-                                                await c.ToCard(selectedCard);
-                                            })
-                                    });
-                                });
+                                        await c.ToCard(selectedCard);
+                                    })
+                            });
                         }
                     });
             }
@@ -180,15 +176,12 @@ namespace CardBoard.Board.ViewModels
                         var project = _synchronizationService.Project;
                         if (CardEdited != null)
                         {
-                            _synchronizationService.Community.Perform(async delegate
+                            _cardDetail.Clear(_synchronizationService.Project);
+                            CardEdited(this, new CardEditedEventArgs
                             {
-                                await _cardDetail.Clear(_synchronizationService.Project);
-                                CardEdited(this, new CardEditedEventArgs
-                                {
-                                    CardDetail = _cardDetail,
-                                    Completed = c =>
-                                        AddCardCompleted(project, c)
-                                });
+                                CardDetail = _cardDetail,
+                                Completed = c =>
+                                    AddCardCompleted(project, c)
                             });
                         }
                     });
@@ -226,18 +219,12 @@ namespace CardBoard.Board.ViewModels
 
         public void PrepareNewCard()
         {
-            _synchronizationService.Community.Perform(async delegate
-            {
-                await _cardDetail.Clear(_synchronizationService.Project);
-            });
+            _cardDetail.Clear(_synchronizationService.Project);
         }
 
         public void PrepareEditCard(Card card)
         {
-            _synchronizationService.Community.Perform(async delegate
-            {
-                await _cardDetail.FromCard(card);
-            });
+            _cardDetail.FromCard(card);
         }
 
         public void ClearSelection()

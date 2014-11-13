@@ -19,7 +19,7 @@
                 Margin="10"
                 HorizontalAlignment="Center" Width="300">
                 <TextBlock TextWrapping="Wrap" Text="Identifier:" FontSize="18.667" Foreground="Black" Margin="10,10,10,0"/>
-                <TextBlock TextWrapping="Wrap" Text="{Binding Identifier}" FontSize="21.333" Foreground="Black" Margin="10,10,10,0"/>
+                <TextBlock TextWrapping="Wrap" Text="{Binding ExistingIdentifier}" FontSize="21.333" Foreground="Black" Margin="10,10,10,0"/>
                 <TextBlock
                     Text="Name:"
                     Margin="10,10,10,0" FontSize="18.667" Foreground="Black" />

@@ -23,16 +23,16 @@ namespace CardBoard.Board.Models
             set { _selectedColumn.Value = value; }
         }
 
-        public async Task Clear(Project project)
+        public void Clear(Project project)
         {
             _text.Value = String.Empty;
-            var columns = await project.Columns.EnsureAsync();
-            var columnOrdinals = columns.Select(async c => new
+            var columns = project.Columns;
+            var columnOrdinals = columns.Select(c => new
             {
-                Ordinal = (await c.Ordinal.EnsureAsync()).Value,
+                Ordinal = c.Ordinal.Value,
                 Column = c
             });
-            var awaitedColumnOrdinals = await Task.WhenAll(columnOrdinals.ToArray());
+            var awaitedColumnOrdinals = columnOrdinals;
             var column = awaitedColumnOrdinals
                 .OrderBy(c => c.Ordinal)
                 .Select(c => c.Column)
@@ -40,22 +40,21 @@ namespace CardBoard.Board.Models
             _selectedColumn.Value = column;
         }
 
-        public async Task FromCard(Card card)
+        public void FromCard(Card card)
         {
             _text.Value = card.Text;
-            _selectedColumn.Value = await GetColumn(card);
         }
 
         public async Task ToCard(Card card)
         {
             card.Text = _text.Value;
-            var column = await GetColumn(card);
-            if (_selectedColumn.Value != column)
-            {
-                var prior = await card.CardColumns.EnsureAsync();
-                await card.Community.AddFactAsync(new CardColumn(
-                    card, _selectedColumn.Value, prior));
-            }
+            //var column = await GetColumn(card);
+            //if (_selectedColumn.Value != column)
+            //{
+            //    var prior = await card.CardColumns.EnsureAsync();
+            //    await card.Community.AddFactAsync(new CardColumn(
+            //        card, _selectedColumn.Value, prior));
+            //}
         }
 
         private static async Task<Column> GetColumn(Card card)

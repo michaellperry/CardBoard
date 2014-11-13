@@ -24,13 +24,14 @@
                 <TextBox
                     x:Name="IdentifierTextBox"
                     Margin="10,0,10,10"
-                    Text="{Binding Identifier, Mode=TwoWay}" FontFamily="Global User Interface" />
+                    Text="{Binding Identifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontFamily="Global User Interface" />
                 <StackPanel
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
                     <Button
                         HorizontalAlignment="Right"
                         Style="{StaticResource OkDialogButtonStyle}"
+                        IsEnabled="{Binding CanJoin}"
                         Click="Ok_Click" />
                     <Button
                         Style="{StaticResource CancelDialogButtonStyle}"

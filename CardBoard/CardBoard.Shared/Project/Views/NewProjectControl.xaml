@@ -24,20 +24,21 @@
                 <TextBox
                     x:Name="IdentifierTextBox"
                     Margin="10,0,10,10"
-                    Text="{Binding Identifier, Mode=TwoWay}" FontFamily="Global User Interface" />
+                    Text="{Binding Identifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontFamily="Global User Interface" />
                 <TextBlock
                 	Text="Name:"
                 	Margin="10,10,10,0" FontSize="18.667" Foreground="Black" />
                 <TextBox
                 	x:Name="NameTextBox"
                 	Margin="10,0,10,10"
-                	Text="{Binding Name, Mode=TwoWay}" />
+                	Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <StackPanel
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
                     <Button
                         HorizontalAlignment="Right"
                         Style="{StaticResource OkDialogButtonStyle}"
+                        IsEnabled="{Binding CanAdd}"
                         Click="Ok_Click" />
                     <Button
                         Style="{StaticResource CancelDialogButtonStyle}"

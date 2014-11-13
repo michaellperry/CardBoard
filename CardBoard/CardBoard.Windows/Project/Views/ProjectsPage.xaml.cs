@@ -65,7 +65,7 @@ namespace CardBoard.Projects.Views
             };
             detail.Width = Window.Current.Bounds.Width;
             detail.Height = Window.Current.Bounds.Height;
-            detail.DataContext = args.ProjectDetail;
+            detail.DataContext = ForView.Wrap(args.ProjectDetail);
             detail.Ok += delegate
             {
                 popup.IsOpen = false;
