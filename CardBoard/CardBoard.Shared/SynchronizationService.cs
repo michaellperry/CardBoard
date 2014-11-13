@@ -12,6 +12,7 @@ using UpdateControls.Correspondence.BinaryHTTPClient;
 using UpdateControls.Correspondence.FileStream;
 using UpdateControls.Correspondence.Memory;
 using UpdateControls.Fields;
+using UpdateControls.XAML;
 using Windows.UI.Xaml;
 
 namespace CardBoard
@@ -28,7 +29,7 @@ namespace CardBoard
             CardBoard.Model.Project.GetNullInstance());
         private IndependentList<Identifier> _identifiers = new IndependentList<Identifier>();
 
-        private Dependent<IEnumerable<Model.Project>> _pendingProjects;
+        private DependentList<Model.Project> _pendingProjects;
 
         public void Initialize()
         {
@@ -47,9 +48,10 @@ namespace CardBoard
 
             LoadInitialFacts(http);
 
-            _pendingProjects = new Dependent<IEnumerable<Model.Project>>(FindPendingProjects);
-            _pendingProjects.Invalidated += JoinPendingProjects;
-            JoinPendingProjects();
+            ForView.Initialize();
+            _pendingProjects = new DependentList<Model.Project>(FindPendingProjects);
+            _pendingProjects.DependentSentry.Invalidated += JoinPendingProjects;
+            UpdateNow();
         }
 
         public void InitializeDesignMode()
@@ -211,7 +213,7 @@ namespace CardBoard
 
         public void UpdateNow()
         {
-            var pendingProjects = _pendingProjects.Value.ToList();
+            var pendingProjects = _pendingProjects.ToList();
             _community.Perform(async delegate
             {
                 foreach (var project in pendingProjects)
