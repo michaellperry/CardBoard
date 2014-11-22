@@ -40,4 +40,11 @@
     			ItemTemplate="{StaticResource ProjectItemTemplate}"
     			Margin="10"/>
     </Grid>
+    <Page.BottomAppBar>
+        <CommandBar>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Join Pluralsight" Command="{Binding JoinPluralsight}" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

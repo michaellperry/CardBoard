@@ -21,7 +21,7 @@ namespace CardBoard
             {
                 string address = "http://correspondencedistributor.azurewebsites.net/";
                 string apiKey = "Azure";
-                int timeoutSeconds = 30;
+                int timeoutSeconds = 10;
                 return new HTTPConfiguration(address, "CardBoard", apiKey, timeoutSeconds);
             }
         }

@@ -57,6 +57,18 @@ namespace CardBoard.Board.Models
             //}
         }
 
+        public async Task ToCardDetail(Card card)
+        {
+            card.Text = _text.Value;
+            var column = await GetColumn(card);
+            if (_selectedColumn.Value != column)
+            {
+                var prior = await card.CardColumns.EnsureAsync();
+                await card.Community.AddFactAsync(new CardColumn(
+                    card, _selectedColumn.Value, prior));
+            }
+        }
+
         private static async Task<Column> GetColumn(Card card)
         {
             var columns = await card.CardColumns.EnsureAsync();

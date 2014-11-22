@@ -152,6 +152,23 @@ namespace CardBoard.Projects.ViewModels
             }
         }
 
+        public ICommand JoinPluralsight
+        {
+            get
+            {
+                return MakeCommand
+                    .Do(delegate
+                    {
+                        _synchronizationService.Community.Perform(async delegate
+                        {
+                            var identifier = await _synchronizationService.Community.AddFactAsync(
+                                new Identifier("pluralsight"));
+                            _synchronizationService.SubscribeTo(identifier);
+                        });
+                    });
+            }
+        }
+
         private void DeleteProjectInternal(Project project)
         {
             _synchronizationService.Community.Perform(async delegate

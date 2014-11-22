@@ -64,7 +64,7 @@ namespace CardBoard.Board.ViewModels
                     card = await _project.Community.AddFactAsync(new Card(
                         _project, DateTime.Now.ToUniversalTime()));
                 }
-                await _cardDetail.ToCard(card);
+                await _cardDetail.ToCardDetail(card);
             });
         }
     }
